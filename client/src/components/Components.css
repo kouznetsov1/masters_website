@@ -1,0 +1,7 @@
+.bigList {
+  max-width: 1500px;
+  height: 200px;
+  margin: auto;
+  text-align: center;
+  border: 2px solid #000;
+}
