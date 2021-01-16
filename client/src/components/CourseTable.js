@@ -1,42 +1,105 @@
 import React, { useEffect, useState } from "react";
 import "./Components.css";
 import Course from "./Course.js";
+import axios from "axios";
 
 class CourseTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      courses: [],
+      all_areas: [],
+    };
   }
 
-  renderCourses() {
-    var period = 1;
+  componentDidMount() {
+    axios.get("http://localhost:5000/courses").then((res) => {
+      const courses = res.data;
+      const all_areas = [];
+      for (let i = 0; i < courses.length; i++) {
+        const course = courses[i];
+        if (!all_areas.includes(course.area)) {
+          all_areas.push(course.area);
+        }
+      }
+      this.setState({ courses });
+      this.setState({ all_areas });
+    });
+  }
+
+  renderSemester() {
     var semester = 7;
-    var area = "";
-    var renderedCourses = [];
+    var renderedSemesters = [];
     do {
-      renderedCourses.push(
-        <div className={"period:" + period}>
+      renderedSemesters.push(
+        <div className={"period_" + semester}>
           <h2>Termin {semester}</h2>
-          <h3>Period {period}</h3>
-          <h3>Area {area}</h3>
-          <table className="table table-sm">
-            <tr>
-              <tbody>
-                <p>skrrt</p>
-              </tbody>
-            </tr>
-          </table>
+          {this.renderAreas(semester)}
         </div>
       );
-    } while (this.state.semester <= 10);
+      semester++;
+    } while (semester <= 10);
+    return <div>{renderedSemesters}</div>;
+  }
+
+  renderAreas(semester) {
+    var renderedAreas = [];
+
+    for (let i = 0; i < this.state.all_areas.length; i++) {
+      const area = this.state.all_areas[i];
+      renderedAreas.push(
+        <div className={"semester_" + semester + " area_" + area}>
+          <h4>{area}</h4>
+          {this.renderNewPeriod(semester, area)}
+        </div>
+      );
+    }
+    return <div>{renderedAreas}</div>;
+  }
+
+  renderNewPeriod(semester, area) {
+    var period = 1;
+    var renderedPeriods = [];
+
+    do {
+      renderedPeriods.push(
+        <div className={"period_" + period}>
+          <h6>Period {period}</h6>
+          {this.renderNewCourse(semester, area, period)}
+        </div>
+      );
+      period++;
+    } while (period <= 2);
+    return <div>{renderedPeriods}</div>;
+  }
+
+  renderNewCourse(semester, area, period) {
+    var renderedCourses = [];
+    var courses = this.state.courses;
+    var current_course;
+
+    // TODO: Index cannot reset after every new period/area/semester
+    var index = 0;
+
+    do {
+      current_course = courses[index];
+      renderedCourses.push(
+        <div className={"course_" + current_course.name}>
+          <p>{current_course.name}</p>
+        </div>
+      );
+      index++;
+    } while (current_course.period === period && current_course.area === area);
+    return renderedCourses;
   }
 
   render() {
-    var tabls = this.renderCourses();
+    var table_test = this.renderSemester();
+    console.log(this.state.all_areas);
     return (
       <div>
-        <p>{tabls}</p>
+        {table_test}
         <table className="table table-sm">
           <thead>
             <tr>

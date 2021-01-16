@@ -17,6 +17,20 @@ app.get("/courses", async (req, res) => {
   }
 });
 
+// get areas
+app.get("/all_areas", async (req, res) => {
+  try {
+    const areas = await pool.query(
+      "SELECT DISTINCT area \
+      FROM courses \
+      ORDER BY area"
+    );
+    res.json(areas.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
 // get all courses for program
 app.get("/courses/:program", async (req, res) => {
   try {
