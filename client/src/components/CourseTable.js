@@ -28,37 +28,67 @@ class CourseTable extends React.Component {
     });
   }
 
-  renderSemester() {
+  semester() {
     var semester = 7;
     var renderedSemesters = [];
+
     do {
       renderedSemesters.push(
-        <div className={"period_" + semester}>
-          <h2>Termin {semester}</h2>
-          {this.renderAreas(semester)}
+        <div id="accordion">
+          <div className="card">
+            <div className="card-header" id={"semester_" + semester}>
+              <h2 className="mb-0">
+                <button
+                  className="btn btn-link"
+                  data-toggle="collapse"
+                  data-target={"#collapse" + semester}
+                  aria-expanded="true"
+                  aria-controls={"collapseOne" + semester}
+                >
+                  Termin {semester}
+                </button>
+              </h2>
+            </div>
+
+            <div
+              id={"collapse" + semester}
+              className="collapse show"
+              aria-labelledby={"semester_" + semester}
+              data-parent="#accordion"
+            >
+              <div className="card-body">{this.areas(semester)}</div>
+            </div>
+          </div>
         </div>
+
+        /*
+        <div className={"period"}>
+          <h2>Termin {semester}</h2>
+          {this.areas(semester)}
+        </div>
+        */
       );
       semester++;
-    } while (semester <= 10);
+    } while (semester <= 9);
     return <div>{renderedSemesters}</div>;
   }
 
-  renderAreas(semester) {
+  areas(semester) {
     var renderedAreas = [];
 
     for (let i = 0; i < this.state.all_areas.length; i++) {
       const area = this.state.all_areas[i];
       renderedAreas.push(
-        <div className={"semester_" + semester + " area_" + area}>
+        <div className={"semester"}>
           <h4>{area}</h4>
-          {this.renderNewPeriod(semester, area)}
+          {this.period(semester, area)}
         </div>
       );
     }
     return <div>{renderedAreas}</div>;
   }
 
-  renderNewPeriod(semester, area) {
+  period(semester, area) {
     var period = 1;
     var renderedPeriods = [];
 
@@ -66,7 +96,7 @@ class CourseTable extends React.Component {
       renderedPeriods.push(
         <div className={"period_" + period}>
           <h6>Period {period}</h6>
-          {this.renderNewCourse(semester, area, period)}
+          {this.course(semester, area, period)}
         </div>
       );
       period++;
@@ -74,54 +104,112 @@ class CourseTable extends React.Component {
     return <div>{renderedPeriods}</div>;
   }
 
-  renderNewCourse(semester, area, period) {
+  course(semester, area, period) {
     var renderedCourses = [];
     var courses = this.state.courses;
-    var current_course;
+    var coursesToRender = [];
 
-    // TODO: Index cannot reset after every new period/area/semester
-    var index = 0;
+    for (let i = 0; i < courses.length; i++) {
+      const course = courses[i];
+      if (
+        course.semester === semester &&
+        course.area === area &&
+        course.period === period
+      ) {
+        coursesToRender.push(course);
+      }
+    }
 
-    do {
-      current_course = courses[index];
-      renderedCourses.push(
-        <div className={"course_" + current_course.name}>
-          <p>{current_course.name}</p>
-        </div>
-      );
-      index++;
-    } while (current_course.period === period && current_course.area === area);
-    return renderedCourses;
+    renderedCourses.push(
+      <table className="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Check</th>
+            <th scope="col">Kurskod</th>
+            <th scope="col">Kurs</th>
+            <th scope="col">Hp</th>
+            <th scope="col">Nivå</th>
+            <th scope="col">Block</th>
+            <th scope="col">VOF</th>
+            <th scope="col">TEN</th>
+            <th scope="col">LAB</th>
+            <th scope="col">PRA</th>
+            <th scope="col">UPG</th>
+            <th scope="col">KTR</th>
+            <th scope="col">HEM</th>
+            <th scope="col">BAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {coursesToRender.map((course) => (
+            <tr>
+              <td>
+                <div className="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="inlineCheckbox1"
+                    value="option1"
+                  />
+                </div>
+              </td>
+              <td>{course.code}</td>
+              <td>{course.name}</td>
+              <td>{course.points}</td>
+              <td>{course.level}</td>
+              <td>{course.block}</td>
+              <td>{course.vof}</td>
+              <td>{this.examinationObject(course.exam)}</td>
+              <td>{this.examinationObject(course.lab)}</td>
+              <td>{this.examinationObject(course.project)}</td>
+              <td>{this.examinationObject(course.upg)}</td>
+              <td>{this.examinationObject(course.ktr)}</td>
+              <td>{this.examinationObject(course.hem)}</td>
+              <td>{this.examinationObject(course.bas)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+    return <div>{renderedCourses}</div>;
+  }
+
+  examinationObject(examination) {
+    if (examination === true) {
+      return "X";
+    }
+    return;
+  }
+
+  tableHead() {
+    return (
+      <table className="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Check</th>
+            <th scope="col">Kurskod</th>
+            <th scope="col">Kurs</th>
+            <th scope="col">Hp</th>
+            <th scope="col">Nivå</th>
+            <th scope="col">Block</th>
+            <th scope="col">VOF</th>
+            <th scope="col">TEN</th>
+            <th scope="col">LAB</th>
+            <th scope="col">PRA</th>
+            <th scope="col">UPG</th>
+            <th scope="col">KTR</th>
+            <th scope="col">HEM</th>
+            <th scope="col">BAS</th>
+          </tr>
+        </thead>
+      </table>
+    );
   }
 
   render() {
-    var table_test = this.renderSemester();
+    var table_test = this.semester();
     console.log(this.state.all_areas);
-    return (
-      <div>
-        {table_test}
-        <table className="table table-sm">
-          <thead>
-            <tr>
-              <th scope="col">Check</th>
-              <th scope="col">Kurskod</th>
-              <th scope="col">Kurs</th>
-              <th scope="col">Hp</th>
-              <th scope="col">Nivå</th>
-              <th scope="col">Block</th>
-              <th scope="col">VOF</th>
-              <th scope="col">TEN</th>
-              <th scope="col">LAB</th>
-              <th scope="col">PRA</th>
-              <th scope="col">UPG</th>
-              <th scope="col">KTR</th>
-              <th scope="col">HEM</th>
-              <th scope="col">BAS</th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-    );
+    return <div>{table_test}</div>;
   }
 }
 
