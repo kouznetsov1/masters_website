@@ -10,6 +10,7 @@ class CourseTable extends React.Component {
     this.state = {
       courses: [],
       all_areas: [],
+      picked_courses: [],
     };
   }
 
@@ -32,11 +33,21 @@ class CourseTable extends React.Component {
     var semester = 7;
     var renderedSemesters = [];
 
+    const semesterBlockStyle = {};
+
+    const headerBlockStyle = {
+      backgroundColor: "#ccf0fa",
+    };
+
     do {
       renderedSemesters.push(
         <div id="accordion">
-          <div className="card">
-            <div className="card-header" id={"semester_" + semester}>
+          <div className="card" style={semesterBlockStyle}>
+            <div
+              className="card-header"
+              id={"semester_" + semester}
+              style={headerBlockStyle}
+            >
               <h2 className="mb-0">
                 <button
                   className="btn btn-link"
@@ -60,13 +71,6 @@ class CourseTable extends React.Component {
             </div>
           </div>
         </div>
-
-        /*
-        <div className={"period"}>
-          <h2>Termin {semester}</h2>
-          {this.areas(semester)}
-        </div>
-        */
       );
       semester++;
     } while (semester <= 9);
@@ -103,6 +107,21 @@ class CourseTable extends React.Component {
     } while (period <= 2);
     return <div>{renderedPeriods}</div>;
   }
+
+  handleCheck = (e) => {
+    if (e) {
+      if (this.state.picked_courses.indexOf(e) > -1) {
+        this.setState({
+          picked_courses: this.state.picked_courses.filter(function (course) {
+            return course !== e.target;
+          }),
+        });
+      } else
+        this.setState({
+          picked_courses: this.state.picked_courses.concat(e),
+        });
+    }
+  };
 
   course(semester, area, period) {
     var renderedCourses = [];
@@ -150,6 +169,7 @@ class CourseTable extends React.Component {
                     type="checkbox"
                     id="inlineCheckbox1"
                     value="option1"
+                    onChange={this.handleCheck(course)} // kör på varenda mappade course
                   />
                 </div>
               </td>
@@ -171,7 +191,7 @@ class CourseTable extends React.Component {
         </tbody>
       </table>
     );
-    return <div>{renderedCourses}</div>;
+    return <div style={{ overflowX: "auto" }}>{renderedCourses}</div>;
   }
 
   examinationObject(examination) {
@@ -209,7 +229,16 @@ class CourseTable extends React.Component {
   render() {
     var table_test = this.semester();
     console.log(this.state.all_areas);
-    return <div>{table_test}</div>;
+    return (
+      <div>
+        <p>
+          {this.state.picked_courses.map((course) => (
+            <p>picked course: {course.name}</p>
+          ))}
+        </p>
+        {table_test}
+      </div>
+    );
   }
 }
 
