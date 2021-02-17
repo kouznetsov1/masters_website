@@ -33,11 +33,13 @@ class CourseTable extends React.Component {
     var semester = 7;
     var renderedSemesters = [];
 
-    const semesterBlockStyle = {};
-
-    const headerBlockStyle = {
-      backgroundColor: "#ccf0fa",
+    const semesterBlockStyle = {
+      width: "80%",
+      margin: "auto",
+      marginTop: "20px",
     };
+
+    const headerBlockStyle = {};
 
     do {
       renderedSemesters.push(
@@ -169,7 +171,6 @@ class CourseTable extends React.Component {
                     type="checkbox"
                     id="inlineCheckbox1"
                     value="option1"
-                    onChange={this.handleCheck(course)} // kör på varenda mappade course
                   />
                 </div>
               </td>
