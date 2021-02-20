@@ -1,0 +1,15 @@
+.filterBox {
+  width: 29.7em;
+  height: 15em;
+  background-color: #bebebe;
+  border-style: solid;
+  border-width: 0.1em;
+  margin: 1em;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.filterButton {
+  display: block;
+  width: 100%;
+}

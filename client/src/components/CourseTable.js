@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Components.css";
-import Course from "./Course.js";
 import axios from "axios";
 
 class CourseTable extends React.Component {
@@ -86,7 +85,14 @@ class CourseTable extends React.Component {
       const area = this.state.all_areas[i];
       renderedAreas.push(
         <div className={"semester"}>
-          <h4>{area}</h4>
+          <h3
+            style={{
+              marginTop: "20px",
+              backgroundColor: "#8fbaff",
+            }}
+          >
+            {area}
+          </h3>
           {this.period(semester, area)}
         </div>
       );
@@ -101,7 +107,7 @@ class CourseTable extends React.Component {
     do {
       renderedPeriods.push(
         <div className={"period_" + period}>
-          <h6>Period {period}</h6>
+          <h5>Period {period}</h5>
           {this.course(semester, area, period)}
         </div>
       );
@@ -164,7 +170,7 @@ class CourseTable extends React.Component {
         <tbody>
           {coursesToRender.map((course) => (
             <tr>
-              <td>
+              <td style={{ width: "60px" }}>
                 <div className="form-check">
                   <input
                     class="form-check-input"
@@ -174,12 +180,22 @@ class CourseTable extends React.Component {
                   />
                 </div>
               </td>
-              <td>{course.code}</td>
-              <td>{course.name}</td>
-              <td>{course.points}</td>
-              <td>{course.level}</td>
-              <td>{course.block}</td>
-              <td>{course.vof}</td>
+              <td style={{ width: "100px" }}>
+                <a
+                  href={
+                    "http://www.google.com/search?q=" + course.code + "+liu"
+                  }
+                >
+                  {course.code}
+                </a>
+              </td>
+              <td style={{ width: "500px" }}>
+                <a href={course.url}>{course.name}</a>
+              </td>
+              <td style={{ width: "80px" }}>{course.points}</td>
+              <td style={{ width: "80px" }}>{course.level}</td>
+              <td style={{ width: "100px" }}>{course.block}</td>
+              <td style={{ width: "80px" }}>{course.vof}</td>
               <td>{this.examinationObject(course.exam)}</td>
               <td>{this.examinationObject(course.lab)}</td>
               <td>{this.examinationObject(course.project)}</td>
@@ -229,17 +245,7 @@ class CourseTable extends React.Component {
 
   render() {
     var table_test = this.semester();
-    console.log(this.state.all_areas);
-    return (
-      <div>
-        <p>
-          {this.state.picked_courses.map((course) => (
-            <p>picked course: {course.name}</p>
-          ))}
-        </p>
-        {table_test}
-      </div>
-    );
+    return <div>{table_test}</div>;
   }
 }
 
