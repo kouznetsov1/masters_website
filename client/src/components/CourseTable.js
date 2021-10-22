@@ -131,6 +131,25 @@ class CourseTable extends React.Component {
     }
   };
 
+  checkBox(courseCode, isPressed) {
+    const [pressed, setPressed] = this.useState("option1");
+
+    if (isPressed) {
+      setPressed("option2");
+    }
+
+    return (
+      <div className="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="inlineCheckbox1"
+          value="option1"
+        />
+      </div>
+    );
+  }
+
   course(semester, area, period) {
     var renderedCourses = [];
     var courses = this.state.courses;
@@ -173,10 +192,10 @@ class CourseTable extends React.Component {
               <td style={{ width: "60px" }}>
                 <div className="form-check">
                   <input
-                    class="form-check-input"
                     type="checkbox"
-                    id="inlineCheckbox1"
-                    value="option1"
+                    name="prop1"
+                    id="string"
+                    className="modal__checkbox-input"
                   />
                 </div>
               </td>
