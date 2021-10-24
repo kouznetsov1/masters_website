@@ -32,8 +32,10 @@ class CourseTableTest extends React.Component {
         name: [],
         course: [],
       };
+
       for (let i = 0; i < courses_mount.length; i++) {
         var course = courses_mount[i];
+
         if (!all_areas.includes(course.area)) {
           all_areas.push(course.area);
         }
@@ -42,39 +44,65 @@ class CourseTableTest extends React.Component {
           courses.name.push(course.name);
           courses.course.push(course);
         }
+
         else{
           var index = courses.name.indexOf(course.name);
-          if (!courses.course[index].semester.includes(course.semester)){
-            courses.course[index].semester.push(course.semester);
-          }
+
           if (!courses.course[index].area.includes(course.area)){
             courses.course[index].area.push(course.area);
           }
-          if (!courses.course[index].block.includes(course.block)){
-            courses.course[index].block.push(course.block);
+
+          var dynamic_values = courses.course[index].dynamic_values;
+          var dyn_values = this.setDynamicValues(course);
+          var added = false;
+
+          for (let j = 0; j < dynamic_values.length; j++){
+            
+            if (!added){
+              if (!(courses.course[index].dynamic_values[j].semester == course.semester)){
+                courses.course[index].dynamic_values.push(dyn_values);
+                added = true;
+              }
+              else if (!(courses.course[index].dynamic_values[j].period == course.period)){
+                courses.course[index].dynamic_values.push(dyn_values);
+                added = true;
+              }
+            }
           }
-          if (!courses.course[index].period.includes(course.period)){
-            courses.course[index].period.push(course.period);
+
+/*
+          if (!(courses.course[index].dynamic_values.semester == course.semester)){
+            var dyn_values = this.setDynamicValues(course);
+            courses.course[index].dynamic_values.push(dyn_values);
           }
+          else if (!(courses.course[index].dynamic_values.period == course.period)){
+            var dyn_values = this.setDynamicValues(course);
+            courses.course[index].dynamic_values.push(dyn_values);
+          }
+          */
         }
       }
-      //console.log(courses_mount.length);
       console.log(courses);
       this.setState({ courses });
       this.setState({ all_areas });
     });
   }
 
+  setDynamicValues(course){
+    var dynamic_values = {
+      semester: course.semester,
+      block: course.block,
+      period: course.period,
+      checked_here: false,
+    }
+    return dynamic_values;
+  }
 
+  // variable needs to be of type array for the ones below 
   fixCourseDatatypes(course){
-    var semester = course.semester;
-    var area = course.area;
-    var block = course.block;
-    var period = course.period;
-    course.semester = [semester];
-    course.area = [area];
-    course.block = [block];
-    course.period = [period];
+    course.dynamic_values = [this.setDynamicValues(course)];
+    course.area = [course.area];
+    course.checked = false;
     return course;
   };
 
