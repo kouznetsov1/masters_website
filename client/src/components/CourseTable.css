@@ -1,0 +1,15 @@
+.full-table {
+	width: 80%;
+	margin: auto;
+	margin-top: 3em;
+}
+
+.area-header {
+	background-color: #8fbaff;
+}
+
+.periods {
+	margin-left: 0.8em;
+	margin-top: 1em;
+	margin-right: 0.8em;
+}

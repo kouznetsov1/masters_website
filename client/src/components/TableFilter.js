@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Components.css";
+import "./TableFilter.css";
 
 class TableFilter extends React.Component {
   constructor(props) {
@@ -9,12 +9,7 @@ class TableFilter extends React.Component {
 
   render() {
     return (
-      <div
-        style={{
-          width: "80%",
-          margin: "auto",
-        }}
-      >
+      <div className="filterBoxes">
         <ProgramFilter />
         <AreaFilter />
         <PrecisionFilter />
@@ -30,11 +25,6 @@ function ProgramFilter() {
       <div className="overflow-auto">
         <div
           class="col-4"
-          style={{
-            display: "table",
-            width: "29em",
-            border: "solid",
-          }}
         >
           <div class="list-group" id="list-tab" role="tablist">
             <a
@@ -90,22 +80,50 @@ function AreaFilter() {
       <h3>Inriktning</h3>
       <div
         className="btn-group-vertical"
-        style={{ display: "inline-block", width: "100%" }}
       >
         <button
-          className="filterButton"
+          className="areaFilterButton"
           type="button"
           class="btn btn-secondary"
         >
           Area 1
         </button>
         <button
-          className="filterButton"
+          className="areaFilterButton"
           type="button"
           class="btn btn-secondary"
         >
           Area 2
         </button>
+        <button
+          className="areaFilterButton"
+          type="button"
+          class="btn btn-secondary"
+        >
+          Area 2
+        </button>
+        <button
+          className="areaFilterButton"
+          type="button"
+          class="btn btn-secondary"
+        >
+          Area 2
+        </button>
+        <button
+          className="areaFilterButton"
+          type="button"
+          class="btn btn-secondary"
+        >
+          Area 2
+        </button>
+<button
+          className="areaFilterButton"
+          type="button"
+          class="btn btn-secondary"
+        >
+          Area 2
+        </button>
+
       </div>
     </div>
   );
