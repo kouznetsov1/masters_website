@@ -7,8 +7,9 @@ def add_to_db(course):
     #connect to the database
     connection = psycopg2.connect (
         host = "localhost",
-        database = "masters_project",
-        user = "postgres"
+        database = "postgres",
+        user = "postgres",
+        password = "postgres"
     )
 
     # cursor

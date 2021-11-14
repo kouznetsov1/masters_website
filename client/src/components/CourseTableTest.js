@@ -34,6 +34,7 @@ class CourseTableTest extends React.Component {
           course = this.fixCourseDatatypes(course);
           courses.name.push(course.name);
           courses.course.push(course);
+          course.strike_through = false;
         } else {
           var index = courses.name.indexOf(course.name);
 
@@ -43,7 +44,6 @@ class CourseTableTest extends React.Component {
 
           var dynamic_values = courses.course[index].dynamic_values;
           var dyn_values = this.setDynamicValues(course);
-          var added = false;
 
           courses.course[index].dynamic_values.push(dyn_values);
 
@@ -63,7 +63,6 @@ class CourseTableTest extends React.Component {
             },
             []
           );
-
           courses.course[index].dynamic_values = dyn_val_unique;
         }
       }
@@ -86,7 +85,6 @@ class CourseTableTest extends React.Component {
   fixCourseDatatypes(course) {
     course.dynamic_values = [this.setDynamicValues(course)];
     course.area = [course.area];
-    course.checked = false;
     return course;
   }
 
@@ -211,7 +209,10 @@ class CourseTableTest extends React.Component {
         <tbody>
           {coursesToRender.map((course) => (
             <tr>
-              <Checkbox course={course}/>
+              <Checkbox course={course}
+                semester={course.semester}
+                period={course.period}
+              />
               {/*
               <td style={{width: "1.2em"}}>
                 <div className="form-check">

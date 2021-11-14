@@ -11,7 +11,7 @@ from database import add_to_db
 def start_scraping(url):
     driver = webdriver.Chrome()
     driver.get(url)
-    
+
     # waits for site to load, then clicks on "programplan"
     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/a")))
     driver.find_element(By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/a").click()
@@ -28,10 +28,10 @@ def scrape_semester(driver):
 
         print("Done: Semester", semester)
         semester += 1
-    
+
 def scrape_area(driver, course):
     counter = 1
-    try: 
+    try:
         while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")):
             area = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")
             course.set_area(area.get_attribute("data-specialization"))
@@ -57,7 +57,7 @@ def scrape_courses(driver, course):
     counter = 2
     try:
         while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter) + "]")):
-            
+
             # using the same course object but if we dont reset some variabes such as examination it lingers for next course
             course.reset()
 
@@ -72,10 +72,10 @@ def scrape_courses(driver, course):
             course.level = driver.find_element(By.XPATH, xpath + "/td[4]").text
             course.block = driver.find_element(By.XPATH, xpath + "/td[5]").text
             course.set_vof(driver.find_element(By.XPATH, xpath + "/td[6]/span").get_attribute("title"))
-            
+
             # check what kind of examination for course
             check_examination(driver, course)
-            
+
             try:
                 # checks if there is additional information
                 if (driver.find_element(By.XPATH, xpath + "/td[7]/div/button/span")):

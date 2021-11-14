@@ -1,3 +1,11 @@
+#### Log 20211114
+
+Did some work on Checkbox.js. I implemented what I thought would work for 
+checking all boxes for a course within the same period and semester, did not work.
+Fix this and work on the strike-through for courses outside of the same period and
+semester. Added strike-through variable to course object.
+
+
 # TO-DO
 
 - [] line-through courses
