@@ -1,3 +1,10 @@
+#### Log 20211117
+
+Checkbox gets ticked when pressed. Other than that I might have figured out 
+the solution, I will have to learn Redux. 
+
+https://daveceddia.com/what-does-redux-do/
+
 #### Log 20211114
 
 Did some work on Checkbox.js. I implemented what I thought would work for 

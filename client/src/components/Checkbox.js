@@ -12,10 +12,19 @@ class Checkbox extends React.Component {
       checked_elsewhere: false,
     };
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    
+    this.onChange = this.onChange.bind(this);
+    this.onClickFunc = this.onClickFunc.bind(this);
   }
 
+  onChange() {
+    /*
+    if ((course.semester === this.state.semester) && (course.period && this.state.period)){
+      checked = true;
+    }*/
+    this.setState({checked: true})
+  }
+
+  /*
   handleInputChange() {
     const course = this.state.course;
     var checked = this.state.checked;
@@ -24,10 +33,12 @@ class Checkbox extends React.Component {
       checked = true;
     }
     this.setState({checked})
+  }*/
+
+  onClickFunc(){
+    this.setState(prevState => ({checked: !prevState.checked}));
+    console.log();
   }
-
-  
-
 
   render() {
     return <input
@@ -35,6 +46,8 @@ class Checkbox extends React.Component {
       type="checkbox"
       checked={this.state.checked}
       onChange={this.handleInputChange}
+      //onClick={() => this.setState(prevState => ({checked: !prevState.checked}))}
+      onClick={this.onClickFunc}
       />;
   }
 }
