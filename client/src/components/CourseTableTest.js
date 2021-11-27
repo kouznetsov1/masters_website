@@ -1,53 +1,47 @@
 import React, { useEffect, useState } from "react";
 import "./CourseTable.css";
 import axios from "axios";
-import Checkbox from "./Checkbox.js"; 
+import Checkbox from "./Checkbox.js";
+import {configureStore} from '@reduxjs/toolkit'
+import { useDispatch, useSelector } from "react-redux";
 
-class CourseTableTest extends React.Component {
-  constructor(props) {
-    super(props);
+const CourseTableTest = () => {
+  const [all_areas, setAllAreas] = useState([]);
+  const [course, setCourses] = useState([]);
+  const [course_name, setCourseName] = useState([]);
+  const dispatch = useDispatch();
 
-    this.state = {
-      courses: [],
-      all_areas: [],
-      picked_courses: [],
-    };
-  }
 
-  componentDidMount() {
+  useEffect(() => {
     axios.get("http://localhost:5000/courses").then((res) => {
       const courses_mount = res.data;
-      const all_areas = [];
-      const courses = {
-        name: [],
-        course: [],
-      };
 
       for (let i = 0; i < courses_mount.length; i++) {
-        var course = courses_mount[i];
+        var curr_course = courses_mount[i];
 
-        if (!all_areas.includes(course.area)) {
-          all_areas.push(course.area);
+        if (!all_areas.includes(curr_course.area)) {
+          all_areas.push(curr_course.area);
         }
 
-        if (!courses.name.includes(course.name)) {
-          course = this.fixCourseDatatypes(course);
-          courses.name.push(course.name);
-          courses.course.push(course);
-          course.strike_through = false;
-        } else {
-          var index = courses.name.indexOf(course.name);
+        if (!course_name.includes(curr_course.name)) {
+          curr_course = fixCourseDatatypes(curr_course);
+          course_name.push(curr_course.name);
+          course.push(curr_course);
+          curr_course.strike_through = false;
+        } 
+        else {
+          var index = course_name.indexOf(curr_course.name);
 
-          if (!courses.course[index].area.includes(course.area)) {
-            courses.course[index].area.push(course.area);
+          if (!course[index].area.includes(curr_course.area)) {
+            course[index].area.push(curr_course.area);
           }
 
-          var dynamic_values = courses.course[index].dynamic_values;
-          var dyn_values = this.setDynamicValues(course);
+          var dynamic_values = course[index].dynamic_values;
+          var dyn_values = setDynamicValues(curr_course);
 
-          courses.course[index].dynamic_values.push(dyn_values);
+          course[index].dynamic_values.push(dyn_values);
 
-          var dyn_val_unique = courses.course[index].dynamic_values.reduce(
+          var dyn_val_unique = course[index].dynamic_values.reduce(
             (unique, o) => {
               if (
                 !unique.some(
@@ -63,15 +57,14 @@ class CourseTableTest extends React.Component {
             },
             []
           );
-          courses.course[index].dynamic_values = dyn_val_unique;
+          course[index].dynamic_values = dyn_val_unique;
         }
       }
-      this.setState({ courses });
-      this.setState({ all_areas });
+      semester();
     });
-  }
+  })
 
-  setDynamicValues(course) {
+  function setDynamicValues(course) {
     var dynamic_values = {
       semester: course.semester,
       block: course.block,
@@ -81,16 +74,17 @@ class CourseTableTest extends React.Component {
     return dynamic_values;
   }
 
-  // variable needs to be of type array for the ones below
-  fixCourseDatatypes(course) {
-    course.dynamic_values = [this.setDynamicValues(course)];
+   // variable needs to be of type array for the ones below
+  function fixCourseDatatypes(course) {
+    course.dynamic_values = [setDynamicValues(course)];
     course.area = [course.area];
     return course;
   }
 
-  semester() {
+  function semester() {
     var semester = 7;
     var renderedSemesters = [];
+    console.log(course);
 
     do {
       renderedSemesters.push(
@@ -116,7 +110,7 @@ class CourseTableTest extends React.Component {
               aria-labelledby={"semester_" + semester}
               data-parent="#accordion"
             >
-              <div className="card-body">{this.areas(semester)}</div>
+              <div className="card-body">{areas(semester)}</div>
             </div>
           </div>
         </div>
@@ -126,23 +120,23 @@ class CourseTableTest extends React.Component {
     return <div>{renderedSemesters}</div>;
   }
 
-  areas(semester) {
+  function areas(semester) {
     var renderedAreas = [];
 
-    for (let i = 0; i < this.state.all_areas.length; i++) {
-      const area = this.state.all_areas[i];
-      if (area !== ""){
+    for (let i = 0; i < all_areas.length; i++) {
+      const curr_area = all_areas[i];
+      if (curr_area !== ""){
         renderedAreas.push(
           <div className={"semester"}>
-            <h3 className="area-header">{area}</h3>
-            {this.period(semester, area)}
+            <h3 className="area-header">{curr_area}</h3>
+            {period(semester, curr_area)}
           </div>
         );
       }
       else{
         renderedAreas.push(
           <div className={"semester"}>
-            {this.period(semester,area)}
+            {period(semester, curr_area)}
           </div>
         )
       }
@@ -150,7 +144,7 @@ class CourseTableTest extends React.Component {
     return <div>{renderedAreas}</div>;
   }
 
-  period(semester, area) {
+  function period(semester, area) {
     var period = 1;
     var renderedPeriods = [];
 
@@ -159,7 +153,7 @@ class CourseTableTest extends React.Component {
         <div className="periods">
           <div className={"period_" + period}>
             <h5>Period {period}</h5>
-            {this.course(semester, area, period)}
+            {render_course(semester, area, period)}
           </div>
         </div>
       );
@@ -168,21 +162,19 @@ class CourseTableTest extends React.Component {
     return <div>{renderedPeriods}</div>;
   }
 
-  course(semester, area, period) {
+  function render_course(semester, area, period) {
     var renderedCourses = [];
-    var courses = this.state.courses;
     var coursesToRender = [];
 
-    for (let i = 0; i < courses.name.length; i++) {
-      const course = courses.course[i];
-      const to_render = this.shallCourseRender(
+    for (let i = 0; i < course_name.length; i++) {
+      const to_render = shallCourseRender(
         semester,
         period,
-        course.dynamic_values
+        course[i].dynamic_values
       );
 
-      if (to_render && course.area.includes(area)) {
-        coursesToRender.push(course);
+      if (to_render && course[i].area.includes(area)) {
+        coursesToRender.push(course[i]);
       }
     }
 
@@ -207,46 +199,35 @@ class CourseTableTest extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {coursesToRender.map((course) => (
+          {coursesToRender.map((courseToRender) => (
             <tr>
-              <Checkbox course={course}
-                semester={course.semester}
-                period={course.period}
+              <Checkbox course={courseToRender}
+                semester={courseToRender.semester}
+                period={courseToRender.period}
               />
-              {/*
-              <td style={{width: "1.2em"}}>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    name="prop1"
-                    id="string"
-                    className="modal__checkbox-input"
-                  />
-                </div>
-              </td>*/}
               <td style={{width: "5em"}}>
                 <a
                   href={
-                    "http://www.google.com/search?q=" + course.code + "+liu"
+                    "http://www.google.com/search?q=" + courseToRender.code + "+liu"
                   }
                 >
-                  {course.code}
+                  {courseToRender.code}
                 </a>
               </td>
               <td style={{width: "40em"}}>
-                <a href={course.url}>{course.name}</a>
+                <a href={courseToRender.url}>{courseToRender.name}</a>
               </td>
-              <td style={{ width: "4em" }}>{course.points}</td>
-              <td style={{ width: "4em" }}>{course.level}</td>
-              <td style={{ width: "5em" }}>{course.block}</td>
-              <td style={{ width: "4em" }}>{course.vof}</td>
-              <td>{this.examinationObject(course.exam)}</td>
-              <td>{this.examinationObject(course.lab)}</td>
-              <td>{this.examinationObject(course.project)}</td>
-              <td>{this.examinationObject(course.upg)}</td>
-              <td>{this.examinationObject(course.ktr)}</td>
-              <td>{this.examinationObject(course.hem)}</td>
-              <td>{this.examinationObject(course.bas)}</td>
+              <td style={{ width: "4em" }}>{courseToRender.points}</td>
+              <td style={{ width: "4em" }}>{courseToRender.level}</td>
+              <td style={{ width: "5em" }}>{courseToRender.block}</td>
+              <td style={{ width: "4em" }}>{courseToRender.vof}</td>
+              <td>{examinationObject(courseToRender.exam)}</td>
+              <td>{examinationObject(courseToRender.lab)}</td>
+              <td>{examinationObject(courseToRender.project)}</td>
+              <td>{examinationObject(courseToRender.upg)}</td>
+              <td>{examinationObject(courseToRender.ktr)}</td>
+              <td>{examinationObject(courseToRender.hem)}</td>
+              <td>{examinationObject(courseToRender.bas)}</td>
             </tr>
           ))}
         </tbody>
@@ -255,7 +236,7 @@ class CourseTableTest extends React.Component {
     return <div>{renderedCourses}</div>;
   }
 
-  checkBox(courseCode, isPressed) {
+  function checkBox(courseCode, isPressed) {
     const [pressed, setPressed] = this.useState("option1");
 
     if (isPressed) {
@@ -265,14 +246,14 @@ class CourseTableTest extends React.Component {
     console.log("hej");
   }
 
-  examinationObject(examination) {
+  function examinationObject(examination) {
     if (examination === true){
       return "X";
     }
     return;
   }
 
-  shallCourseRender(semester, period, dyn_values) {
+  function shallCourseRender(semester, period, dyn_values) {
     for (let i = 0; i < dyn_values.length; i++) {
       if (
         dyn_values[i].semester === semester &&
@@ -283,11 +264,7 @@ class CourseTableTest extends React.Component {
     }
     return false;
   }
-
-  render() {
-    var final_table = this.semester();
-    return <div>{final_table}</div>;
-  }
+  return semester();
 }
 
 export default CourseTableTest;

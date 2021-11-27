@@ -11,29 +11,8 @@ class Checkbox extends React.Component {
       checked: false,
       checked_elsewhere: false,
     };
-
-    this.onChange = this.onChange.bind(this);
     this.onClickFunc = this.onClickFunc.bind(this);
   }
-
-  onChange() {
-    /*
-    if ((course.semester === this.state.semester) && (course.period && this.state.period)){
-      checked = true;
-    }*/
-    this.setState({checked: true})
-  }
-
-  /*
-  handleInputChange() {
-    const course = this.state.course;
-    var checked = this.state.checked;
-
-    if ((course.semester === this.state.semester) && (course.period && this.state.period)){
-      checked = true;
-    }
-    this.setState({checked})
-  }*/
 
   onClickFunc(){
     this.setState(prevState => ({checked: !prevState.checked}));

@@ -1,3 +1,6 @@
+#### Log 20211123
+https://www.digitalocean.com/community/tutorials/how-to-manage-state-in-react-with-redux
+
 #### Log 20211117
 
 Checkbox gets ticked when pressed. Other than that I might have figured out 
