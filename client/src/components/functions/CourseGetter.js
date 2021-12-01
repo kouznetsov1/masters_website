@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useDispatch } from "react-redux";
-import React from "react";
+import React, {useEffect} from "react";
 import { addCourse, addArea } from "../../store/courses";
 
 async function getCourses() {
@@ -11,6 +11,7 @@ async function getCourses() {
       name: [],
       course: [],
     };
+    
     //const dispatch = useDispatch();
 
     const handleCourseAdd = event => {

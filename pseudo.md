@@ -1,3 +1,7 @@
+#### Log 20211201
+Decided to quit Redux, now trying to learn Recoil instead. Seems pretty simple. 
+Started restructuring the whole thing also.
+
 #### Log 20211123
 https://www.digitalocean.com/community/tutorials/how-to-manage-state-in-react-with-redux
 
