@@ -1,14 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { atom, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import "./TableFilter.css";
+import { 
+  nonHandledCourses as coursesToHandleAtom, 
+  courses as handledCoursesAtom,
+  areas as allAreasAtom,
+} from "../atoms";
+import { setCourses } from "./functions/CourseSetter";
 
 class TableFilter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   render() {
     return (
       <div className="filterBoxes">
@@ -20,22 +21,23 @@ class TableFilter extends React.Component {
   }
 }
 
-const nonHandledCourses = atom({
-  key: 'nonHandledCourses',
-  default: [],
-});
 
+// #TODO: 
+// write new api:s to show other programs courses 
 function ProgramFilter() {
   const [currentProgram, setProgram] = useState("D");
-  const [coursesToHandle, setNonHandledCourses] = useRecoilState(nonHandledCourses);
-  //console.log(currentProgram);
+  const [coursesToHandle, setNonHandledCourses] = useRecoilState(coursesToHandleAtom);
+  const [handledCourses, setHandledCourses] = useRecoilState(handledCoursesAtom);
+  const [allAreas, setAllAreas] = useRecoilState(allAreasAtom);
 
-  console.log(coursesToHandle);
+  const [courses, areas] = setCourses(coursesToHandle);
 
   useEffect(() => {
     axios.get("http://localhost:5000/courses").then((res) => {
       setNonHandledCourses(res.data);
     })
+    setHandledCourses(courses);
+    setAllAreas(areas);
   }, currentProgram)
 
   return (

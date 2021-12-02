@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { atom, useRecoilState, selector, useRecoilValue } from "recoil";
+import { useRecoilState, selector, useRecoilValue } from "recoil";
+import {courses as coursesToHandleAtom } from "../atoms";
 
 class TestComponent extends React.Component {
   constructor(props) {
@@ -17,12 +18,12 @@ class TestComponent extends React.Component {
   }
 }
 
-const courses = useRecoilValue(nonHandledCourses);
-
 function TestFunc() {
+    const courses = useRecoilValue(coursesToHandleAtom);
+
     console.log(courses);
     return (
-        <p>hej {courses}</p>
+        <p>tjena</p>
     );
 };
 

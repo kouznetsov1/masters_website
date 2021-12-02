@@ -2,13 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import {
-  RecoilRoot, 
-  atom, 
-  selector, 
-  useRecoilState, 
-  useRecoilValue
-} from 'recoil';
+import { RecoilRoot } from 'recoil';
 
 ReactDOM.render(
   <React.StrictMode>

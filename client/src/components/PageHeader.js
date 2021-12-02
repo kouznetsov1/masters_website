@@ -10,12 +10,12 @@ class Header extends React.Component {
 
   render() {
     return (
-      <nav class="navbar sticky-top navbar-light bg-light">
-        <a class="navbar-brand" href="/">
+      <nav className="navbar sticky-top navbar-light bg-light">
+        <a className="navbar-brand" href="/">
           MASTERS-LIU
         </a>
 
-        <a class="nav-item nav-link" href="#">
+        <a className="nav-item nav-link" href="#">
           Valda kurser
         </a>
 

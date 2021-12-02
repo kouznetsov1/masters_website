@@ -1,88 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "./CourseTable.css";
-import axios from "axios";
 import Checkbox from "./Checkbox.js";
-import {atom, selector, useRecoilState} from 'recoil';
+import { selector, useRecoilState,useRecoilValue } from 'recoil';
+import {courses as coursesAtom, areas as allAreasAtom} from "../atoms";
 
-function CourseTable() {
-  
-}
-useEffect = () => {
-  axios.get("http://localhost:5000/courses").then((res) => {
-    const courses_mount = res.data;
-    const all_areas = [];
-    const courses = {
-      name: [],
-      course: [],
+class CourseTableTest extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      courses: [],
+      allAreas: [],
     };
+  }
 
-
-    for (let i = 0; i < courses_mount.length; i++) {
-      var course = courses_mount[i];
-
-      if (!all_areas.includes(course.area)) {
-        all_areas.push(course.area);
-      }
-
-      if (!courses.name.includes(course.name)) {
-        course = this.fixCourseDatatypes(course);
-        courses.name.push(course.name);
-        courses.course.push(course);
-        course.strike_through = false;
-      } else {
-        var index = courses.name.indexOf(course.name);
-
-        if (!courses.course[index].area.includes(course.area)) {
-          courses.course[index].area.push(course.area);
-        }
-
-        var dynamic_values = courses.course[index].dynamic_values;
-        var dyn_values = this.setDynamicValues(course);
-
-        courses.course[index].dynamic_values.push(dyn_values);
-
-        var dyn_val_unique = courses.course[index].dynamic_values.reduce(
-          (unique, o) => {
-            if (
-              !unique.some(
-                (obj) =>
-                  obj.semester === o.semester &&
-                  obj.block === o.block &&
-                  obj.period === o.period
-              )
-            ) {
-              unique.push(o);
-            }
-            return unique;
-          },
-          []
-        );
-        courses.course[index].dynamic_values = dyn_val_unique;
-      }
-    }
-    this.setState({ courses });
-    this.setState({ all_areas });
-  });
-}
-
-function setDynamicValues(course) {
-  var dynamic_values = {
-    semester: course.semester,
-    block: course.block,
-    period: course.period,
-    checked_here: false,
+  render() {
+    return <Semester/>
   };
-  return dynamic_values;
 }
 
-// variable needs to be of type array for the ones below
-function fixCourseDatatypes(course) {
-  course.dynamic_values = [this.setDynamicValues(course)];
-  course.area = [course.area];
-  return course;
-}
-
-function semester() {
+function Semester() {
   var semester = 7;
   var renderedSemesters = [];
 
@@ -110,7 +46,7 @@ function semester() {
             aria-labelledby={"semester_" + semester}
             data-parent="#accordion"
           >
-            <div className="card-body">{this.areas(semester)}</div>
+            <div className="card-body">{Areas(semester)}</div>
           </div>
         </div>
       </div>
@@ -120,23 +56,26 @@ function semester() {
   return <div>{renderedSemesters}</div>;
 }
 
-function areas(semester) {
+function Areas(semester) {
   var renderedAreas = [];
+  const allAreas = useRecoilValue(allAreasAtom);
 
-  for (let i = 0; i < this.state.all_areas.length; i++) {
-    const area = this.state.all_areas[i];
+  console.log(allAreas);
+
+  for (let i = 0; i < allAreas.length; i++) {
+    const area = allAreas[i];
     if (area !== ""){
       renderedAreas.push(
         <div className={"semester"}>
           <h3 className="area-header">{area}</h3>
-          {this.period(semester, area)}
+          {Period(semester, area)}
         </div>
       );
     }
     else{
       renderedAreas.push(
         <div className={"semester"}>
-          {this.period(semester,area)}
+          {Period(semester,area)}
         </div>
       )
     }
@@ -144,7 +83,7 @@ function areas(semester) {
   return <div>{renderedAreas}</div>;
 }
 
-function period(semester, area) {
+function Period(semester, area) {
   var period = 1;
   var renderedPeriods = [];
 
@@ -153,25 +92,23 @@ function period(semester, area) {
       <div className="periods">
         <div className={"period_" + period}>
           <h5>Period {period}</h5>
-          {this.course(semester, area, period)}
+          {Course(semester, area, period)}
         </div>
       </div>
     );
     period++;
   } while (period <= 2);
-  //this.setState({ courses });
-  //this.setState({ all_areas });
   return <div>{renderedPeriods}</div>;
 }
 
-function course(semester, area, period) {
+function Course(semester, area, period) {
   var renderedCourses = [];
-  var courses = this.state.courses;
+  var courses = useRecoilValue(coursesAtom);
   var coursesToRender = [];
 
   for (let i = 0; i < courses.name.length; i++) {
     const course = courses.course[i];
-    const to_render = this.shallCourseRender(
+    const to_render = shallCourseRender(
       semester,
       period,
       course.dynamic_values
@@ -236,29 +173,19 @@ function course(semester, area, period) {
             <td style={{ width: "4em" }}>{course.level}</td>
             <td style={{ width: "5em" }}>{course.block}</td>
             <td style={{ width: "4em" }}>{course.vof}</td>
-            <td>{this.examinationObject(course.exam)}</td>
-            <td>{this.examinationObject(course.lab)}</td>
-            <td>{this.examinationObject(course.project)}</td>
-            <td>{this.examinationObject(course.upg)}</td>
-            <td>{this.examinationObject(course.ktr)}</td>
-            <td>{this.examinationObject(course.hem)}</td>
-            <td>{this.examinationObject(course.bas)}</td>
+            <td>{examinationObject(course.exam)}</td>
+            <td>{examinationObject(course.lab)}</td>
+            <td>{examinationObject(course.project)}</td>
+            <td>{examinationObject(course.upg)}</td>
+            <td>{examinationObject(course.ktr)}</td>
+            <td>{examinationObject(course.hem)}</td>
+            <td>{examinationObject(course.bas)}</td>
           </tr>
         ))}
       </tbody>
     </table>
   );
   return <div>{renderedCourses}</div>;
-}
-
-function checkBox(courseCode, isPressed) {
-  const [pressed, setPressed] = this.useState("option1");
-
-  if (isPressed) {
-    setPressed("option2");
-  }
-
-  console.log("hej");
 }
 
 function examinationObject(examination) {
@@ -280,4 +207,4 @@ function shallCourseRender(semester, period, dyn_values) {
   return false;
 }
 
-export default semester;
+export default CourseTableTest;

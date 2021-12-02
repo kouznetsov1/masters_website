@@ -1,3 +1,6 @@
+#### Log 20211202
+Kind of finished Recoil implementation. Got some issues with hooks though.
+
 #### Log 20211201
 Decided to quit Redux, now trying to learn Recoil instead. Seems pretty simple. 
 Started restructuring the whole thing also.
