@@ -12,8 +12,8 @@ function App() {
       <div className="App">
         <Header />
         <TableFilter />
-        {/*<CourseTableTest />*/}
-        <TestComponent/>
+        <CourseTableTest />
+        {/*<TestComponent/>*/}
       </div>
   );
 }

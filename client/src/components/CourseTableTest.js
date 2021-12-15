@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, componentDidUpdate } from "react";
 import "./CourseTable.css";
-import Checkbox from "./Checkbox.js";
+//import Checkbox from "./Checkbox.js";
 import { selector, useRecoilState,useRecoilValue } from 'recoil';
 import {courses as coursesAtom, areas as allAreasAtom} from "../atoms";
+import {MDCCheckbox} from '@material/checkbox';
 
 class CourseTableTest extends React.Component {
   constructor(props) {
@@ -59,8 +60,7 @@ function Semester() {
 function Areas(semester) {
   var renderedAreas = [];
   const allAreas = useRecoilValue(allAreasAtom);
-
-  console.log(allAreas);
+  const courses = useRecoilValue(coursesAtom);
 
   for (let i = 0; i < allAreas.length; i++) {
     const area = allAreas[i];
@@ -68,14 +68,14 @@ function Areas(semester) {
       renderedAreas.push(
         <div className={"semester"}>
           <h3 className="area-header">{area}</h3>
-          {Period(semester, area)}
+          {Period(semester, area, courses)}
         </div>
       );
     }
     else{
       renderedAreas.push(
         <div className={"semester"}>
-          {Period(semester,area)}
+          {Period(semester,area, courses)}
         </div>
       )
     }
@@ -83,7 +83,7 @@ function Areas(semester) {
   return <div>{renderedAreas}</div>;
 }
 
-function Period(semester, area) {
+function Period(semester, area, courses) {
   var period = 1;
   var renderedPeriods = [];
 
@@ -92,7 +92,7 @@ function Period(semester, area) {
       <div className="periods">
         <div className={"period_" + period}>
           <h5>Period {period}</h5>
-          {Course(semester, area, period)}
+          {Course(semester, area, period, courses)}
         </div>
       </div>
     );
@@ -101,9 +101,8 @@ function Period(semester, area) {
   return <div>{renderedPeriods}</div>;
 }
 
-function Course(semester, area, period) {
+function Course(semester, area, period, courses) {
   var renderedCourses = [];
-  var courses = useRecoilValue(coursesAtom);
   var coursesToRender = [];
 
   for (let i = 0; i < courses.name.length; i++) {
@@ -142,21 +141,7 @@ function Course(semester, area, period) {
       <tbody>
         {coursesToRender.map((course) => (
           <tr>
-            <Checkbox course={course}
-              semester={course.semester}
-              period={course.period}
-            />
-            {/*
-            <td style={{width: "1.2em"}}>
-              <div className="form-check">
-                <input
-                  type="checkbox"
-                  name="prop1"
-                  id="string"
-                  className="modal__checkbox-input"
-                />
-              </div>
-            </td>*/}
+          {Checkbox(course, semester, period)}
             <td style={{width: "5em"}}>
               <a
                 href={
@@ -186,6 +171,95 @@ function Course(semester, area, period) {
     </table>
   );
   return <div>{renderedCourses}</div>;
+}
+
+
+/*
+function Checkbox(course, semester, period){
+  useEffect(() => {
+    if (beenRendered){
+      for (let i = 0; i < course.dynamic_values.length; i++) {
+        const dynValues = course.dynamic_values[i];
+        if (dynValues.period === period && dynValues.semester === semester){
+          return DisabledCheckbox();
+        }
+        else {
+          return EnabledCheckbox();
+        }
+      }
+    }
+  }, courseArray)
+
+
+  return EnabledCheckbox();
+}*/
+
+function Checkbox (course, semester, period){
+  if (course.checked){
+    const dynamicValLength = course.dynamic_values.length;
+    for (let i = 0; i < dynamicValLength; i++) {
+      var dynVal = course.dynamic_values[i];
+  
+      if (dynVal.semester === semester && dynVal.period === period && dynVal.checked_here){
+        return EnabledCheckbox(course, semester, period);
+      }
+      else{
+        return DisabledCheckbox();
+      }
+    }
+  }
+  else {
+    return EnabledCheckbox(course, semester, period);
+  }
+}
+
+
+function handleCheckboxClick(course, semester, period){
+  console.log(course);
+  if (course.semester === semester && course.period === period){
+    // course.checked is true if course is checked anywhere in the table
+    if (course.checked === true){
+      course.checked = false;
+    }
+    else{
+      course.checked = true;
+    }
+  }
+}
+
+function EnabledCheckbox(course, semester, period){
+  return (
+    <div 
+    class="mdc-checkbox" 
+    style={{margin: "auto", border: "2px solid black"}}
+    onClick={() => handleCheckboxClick(course, semester, period)}>
+    <input type="checkbox"
+           class="mdc-checkbox__native-control"
+           id="checkbox-1"
+           />
+  </div>
+  )
+}
+
+function DisabledCheckbox(){
+  return(
+    <div class="mdc-checkbox mdc-checkbox--disabled">
+  <input type="checkbox"
+         id="basic-disabled-checkbox"
+         class="mdc-checkbox__native-control"
+         disabled />
+  <div class="mdc-checkbox__background">
+    <svg class="mdc-checkbox__checkmark"
+         viewBox="0 0 24 24">
+      <path class="mdc-checkbox__checkmark-path"
+            fill="none"
+            d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+    </svg>
+    <div class="mdc-checkbox__mixedmark"></div>
+  </div>
+  <div class="mdc-checkbox__ripple"></div>
+</div>
+  )
 }
 
 function examinationObject(examination) {
