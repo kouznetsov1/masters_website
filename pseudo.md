@@ -1,3 +1,11 @@
+#### Log 20211220
+Jeez, I solved the state issue for checkboxes, its really shitty though but its working.
+Next on the to-do list:
+* - implement filtering by areas
+* - write api:s and fix database for changing program
+* - write some more state management shiz for chosen courses
+* - write the whole page for chosen courses
+
 #### Log 20211202
 Kind of finished Recoil implementation. Got some issues with hooks though.
 

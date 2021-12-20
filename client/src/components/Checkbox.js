@@ -38,21 +38,16 @@ const Checkbox = (props) => {
   }
 
   useEffect(() => {
-    console.log("------------");
-    var checked = false;
-    var disable = false;
 
     if (courseState.checked) {
+      var checked = false;
       for (var i = 0; i < courseState.dynamic_values.length; i++){
         if (courseState.dynamic_values[i].semester === props.semester && courseState.dynamic_values[i].period === props.period && courseState.dynamic_values[i].checked_here) {
           checked = true;
         }
       }
-      if (!checked) {
-        disable = true;
-      }
 
-      if (disable) {
+      if (!checked) {
         setDisabled(true);
       }
 
@@ -64,20 +59,34 @@ const Checkbox = (props) => {
       setDisabled(false);
       setChecked(false);
     }
+    // this is not effective, it "changes" all course objects, not just the one that is clicked
   }, [courseState]);
 
 
-  return (
-    <div className="mdc-checkbox" 
-    style={{ margin: "auto", border: "2px solid black" }} 
-    onClick={() => handleCheckboxClick(props.semester, props.period)}>
-      <input type="checkbox" 
-      className="mdc-checkbox__native-control" 
-      id="checkbox-1"
-      checked={checked}
-      disabled={disabled}/>
-    </div>
-  );
+  if (disabled){
+    return (
+      <div className="mdc-checkbox" 
+      style={{ margin: "auto", width: "35px"}} >
+        <input type="checkbox" 
+        className="mdc-checkbox__native-control" 
+        id="checkbox-1"
+        disabled
+        />
+      </div>
+    );
+  }
+  else {
+    return (
+      <div className="mdc-checkbox" 
+      style={{ width: "15px", margin: "auto", }}
+      onClick={() => handleCheckboxClick(props.semester, props.period)}>
+        <input type="checkbox" 
+        className="mdc-checkbox__native-control" 
+        id="checkbox-1"
+        checked={checked}/>
+      </div>
+    );
+  }
 }
 
 export default Checkbox;
