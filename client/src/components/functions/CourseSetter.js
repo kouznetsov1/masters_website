@@ -8,6 +8,8 @@ export function setCourses(nonHandledCourses) {
     course: [],
   };
 
+  var course_id = 0;
+
   for (let i = 0; i < courses_mount.length; i++) {
     var course = courses_mount[i];
 
@@ -17,6 +19,8 @@ export function setCourses(nonHandledCourses) {
 
     if (!courses.name.includes(course.name)) {
       course = fixCourseDatatypes(course);
+      course.id = course_id;
+      course_id++;
       courses.name.push(course.name);
       courses.course.push(course);
       course.checked = false;

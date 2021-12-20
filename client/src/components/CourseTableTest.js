@@ -1,19 +1,10 @@
-import React, { useEffect, useState, useRef, componentDidUpdate } from "react";
+import React, { useEffect, useState } from "react";
 import "./CourseTable.css";
 //import Checkbox from "./Checkbox.js";
-import { selector, useRecoilState,useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {courses as coursesAtom, areas as allAreasAtom} from "../atoms";
-import {MDCCheckbox} from '@material/checkbox';
 
 class CourseTableTest extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      courses: [],
-      allAreas: [],
-    };
-  }
-
   render() {
     return <Semester/>
   };
@@ -60,7 +51,6 @@ function Semester() {
 function Areas(semester) {
   var renderedAreas = [];
   const allAreas = useRecoilValue(allAreasAtom);
-  const courses = useRecoilValue(coursesAtom);
 
   for (let i = 0; i < allAreas.length; i++) {
     const area = allAreas[i];
@@ -68,14 +58,14 @@ function Areas(semester) {
       renderedAreas.push(
         <div className={"semester"}>
           <h3 className="area-header">{area}</h3>
-          {Period(semester, area, courses)}
+          {Period(semester, area)}
         </div>
       );
     }
     else{
       renderedAreas.push(
         <div className={"semester"}>
-          {Period(semester,area, courses)}
+          {Period(semester,area)}
         </div>
       )
     }
@@ -83,16 +73,17 @@ function Areas(semester) {
   return <div>{renderedAreas}</div>;
 }
 
-function Period(semester, area, courses) {
+function Period(semester, area) {
   var period = 1;
   var renderedPeriods = [];
 
+  console.log("period");
   do {
     renderedPeriods.push(
       <div className="periods">
         <div className={"period_" + period}>
           <h5>Period {period}</h5>
-          {Course(semester, area, period, courses)}
+          {Course(semester, area, period)}
         </div>
       </div>
     );
@@ -101,11 +92,12 @@ function Period(semester, area, courses) {
   return <div>{renderedPeriods}</div>;
 }
 
-function Course(semester, area, period, courses) {
+function Course(semester, area, period) {
+  const courses = useRecoilValue(coursesAtom);
   var renderedCourses = [];
   var coursesToRender = [];
 
-  for (let i = 0; i < courses.name.length; i++) {
+  for (let i = 0; i < courses.course.length; i++) {
     const course = courses.course[i];
     const to_render = shallCourseRender(
       semester,
@@ -173,28 +165,8 @@ function Course(semester, area, period, courses) {
   return <div>{renderedCourses}</div>;
 }
 
-
-/*
-function Checkbox(course, semester, period){
-  useEffect(() => {
-    if (beenRendered){
-      for (let i = 0; i < course.dynamic_values.length; i++) {
-        const dynValues = course.dynamic_values[i];
-        if (dynValues.period === period && dynValues.semester === semester){
-          return DisabledCheckbox();
-        }
-        else {
-          return EnabledCheckbox();
-        }
-      }
-    }
-  }, courseArray)
-
-
-  return EnabledCheckbox();
-}*/
-
 function Checkbox (course, semester, period){
+
   if (course.checked){
     const dynamicValLength = course.dynamic_values.length;
     for (let i = 0; i < dynamicValLength; i++) {

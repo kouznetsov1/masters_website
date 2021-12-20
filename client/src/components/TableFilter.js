@@ -23,7 +23,7 @@ class TableFilter extends React.Component {
 
 
 // #TODO: 
-// write new api:s to show other programs courses 
+// rewrite api to show other programs courses 
 function ProgramFilter() {
   const [currentProgram, setProgram] = useState("D");
   const [coursesToHandle, setNonHandledCourses] = useRecoilState(coursesToHandleAtom);
