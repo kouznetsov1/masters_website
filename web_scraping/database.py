@@ -15,7 +15,7 @@ def add_to_db(course):
     # cursor
     cursor = connection.cursor()
 
-    
+
     # had to add ' 
     course_name = "'" + course.name + "'"
     course_area = "'" + course.area + "'"
@@ -33,9 +33,9 @@ def add_to_db(course):
 
     postgres_insert_query = """INSERT INTO courses(name, code, semester, period, area, points, level, block, \
         url, other_information, vof, lab, exam, project, upg, ktr, hem, bas, more_periods) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-    
+
     cursor.execute(postgres_insert_query % record_to_insert)
-    
+
 
     connection.commit()
     print("commit called")

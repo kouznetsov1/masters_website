@@ -8,7 +8,7 @@ from course import Course
 from database import add_to_db
 
 
-def start_scraping(url):
+def start_scraping(program, url):
     driver = webdriver.Chrome()
     driver.get(url)
 
@@ -16,10 +16,11 @@ def start_scraping(url):
     WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/a")))
     driver.find_element(By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/a").click()
 
-    scrape_semester(driver)
+    scrape_semester(program, driver)
 
-def scrape_semester(driver):
+def scrape_semester(program, driver):
     course = Course()
+    course.program = program
     semester = 7
     while semester <= 10:
         course.semester = semester
@@ -34,7 +35,7 @@ def scrape_area(driver, course):
     try:
         while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")):
             area = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")
-            course.set_area(area.get_attribute("data-specialization"))
+            #course.set_area(area.get_attribute("data-specialization"))
             course.area_number = counter
             print("Working through area number: ", course.area_number, "Area:", course.area)
             scrape_period(driver, course)
@@ -82,10 +83,11 @@ def scrape_courses(driver, course):
                     course.other_information = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter+1) + "]/td/div").get_attribute("innerText")
             except:
                 course.other_information = ''
-            
+
             # done with course, add course to db and add 2 to counter to go to next course
             print("Period:", course.period)
-            add_to_db(course)
+            print("Course name:", course.name)
+            #add_to_db(course)
             counter += 2
     except:
         print("Done working through courses.")
@@ -113,6 +115,27 @@ def check_examination(driver, course):
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
 
+def main():
+    urls = {
+        "D": "https://liu.se/studieinfo/program/6cddd/3695",
+        "DPU": "https://liu.se/studieinfo/program/6cdpu/3704",
+        "ED": "https://liu.se/studieinfo/program/6cien/3706",
+        "EMM": "https://liu.se/studieinfo/program/6cemm/3708",
+        "I": "https://liu.se/studieinfo/program/6ciii/3710",
+        "IT": "https://liu.se/studieinfo/program/6cite/3712",
+        "KB": "https://liu.se/studieinfo/program/6ckeb/3713",
+        "KTS": "https://liu.se/studieinfo/program/6ckts/3716",
+        "M": "https://liu.se/studieinfo/program/6cmmm/3724",
+        "MED": "https://liu.se/studieinfo/program/6cmed/3718",
+        "MT": "https://liu.se/studieinfo/program/6cmen/3720",
+        "U": "https://liu.se/studieinfo/program/6cmju/3722",
+        "TBI": "https://liu.se/studieinfo/program/6ctbi/3726",
+        "Y": "https://liu.se/studieinfo/program/6cyyy/3728"
+    }
 
-url = "https://liu.se/studieinfo/program/6cddd/3695"
-start_scraping(url)
+    for program in urls:
+        print(program, '-', urls[program])
+        start_scraping(program, urls[program])
+
+#start_scraping(url)
+main()

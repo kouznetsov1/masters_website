@@ -3,6 +3,7 @@ class Course():
 
     def __init__(self):
         self.name = None #
+        self.program = None
         self.code = None #
         self.semester = None 
         self.period = None
@@ -49,7 +50,7 @@ class Course():
             self.vof = "V"
         else:
             self.vof = "-"
-
+    """
     def set_area(self, area):
         if "" == area:
             self.area = ""
@@ -81,6 +82,7 @@ class Course():
             self.area = "System-on-chip"
         elif "säkrasystem" in area:
             self.area = "Säkra system"
+    """
 
     def set_points(self, hp_in):
         if "*" in hp_in:
@@ -88,9 +90,10 @@ class Course():
             self.more_periods = True
         else:
             self.points = hp_in
-    
+
     def reset(self):
         self.name = None
+        self.program = None
         self.code = None
         self.points = None
         self.level = None
