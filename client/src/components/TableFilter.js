@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import "./TableFilter.css";
-import { 
-  nonHandledCourses as coursesToHandleAtom, 
+import {
+  nonHandledCourses as coursesToHandleAtom,
   courses as handledCoursesAtom,
   areas as allAreasAtom,
 } from "../atoms";
@@ -21,77 +21,66 @@ class TableFilter extends React.Component {
   }
 }
 
-
-// #TODO: 
-// rewrite api to show other programs courses 
+// #TODO:
+// rewrite api to show other programs courses
 function ProgramFilter() {
-  const [currentProgram, setProgram] = useState("D");
-  const [coursesToHandle, setNonHandledCourses] = useRecoilState(coursesToHandleAtom);
-  const [handledCourses, setHandledCourses] = useRecoilState(handledCoursesAtom);
-  const [allAreas, setAllAreas] = useRecoilState(allAreasAtom);
+  const [currentProgram, setProgram] = useState();
+  const [coursesToHandle, setNonHandledCourses] = useRecoilState(
+    coursesToHandleAtom
+  );
+  const setHandledCourses = useSetRecoilState(handledCoursesAtom);
+  const setAllAreas = useSetRecoilState(allAreasAtom);
 
   const [courses, areas] = setCourses(coursesToHandle);
 
   useEffect(() => {
     axios.get("http://localhost:5000/courses").then((res) => {
       setNonHandledCourses(res.data);
-    })
+    });
     setHandledCourses(courses);
     setAllAreas(areas);
-  }, currentProgram)
+    console.log(currentProgram);
+  }, [currentProgram]);
+
+  var programs = {
+    D: "Datateknik",
+    DPU: "Design- & produktutveckling",
+    ED: "Elektronikdesign",
+    EMM: "Energi - miljö - management",
+    I: "Industriell Ekonomi",
+    IT: "Informationsteknologi",
+    KB: "Kemisk biologi",
+    KTS: "Kommunikation, transport och samhälle",
+    M: "Maskinteknik",
+    MED: "Medicinsk teknisk",
+    MT: "Medieteknik",
+    U: "Mjukvaruteknik",
+    TBI: "Teknisk Biologi",
+    Y: "Teknisk fysik och elektroteknik",
+  };
 
   return (
     <div className="filterBox">
       <h3>Program</h3>
       <div className="overflow-auto">
-        <div
-          class="col-4"
-        >
+        <div class="col-4">
           <div class="list-group" id="list-tab" role="tablist">
-            <a
-              class="list-group-item list-group-item-action active"
-              program="D"
-              id="list-home-list"
-              data-toggle="list"
-              href="#list-home"
-              role="tab"
-              aria-controls="home"
-              onClick={(e) => setProgram(e.target.attributes.program.nodeValue)}
-            >
-              Datateknik
-            </a>
-            <a
-              class="list-group-item list-group-item-action"
-              program="U"
-              id="list-profile-list"
-              data-toggle="list"
-              href="#list-profile"
-              role="tab"
-              aria-controls="profile"
-              onClick={(e) => setProgram(e.target.attributes.program.nodeValue)}
-            >
-              Mjukvaruteknik
-            </a>
-            <a
-              class="list-group-item list-group-item-action"
-              id="list-messages-list"
-              data-toggle="list"
-              href="#list-messages"
-              role="tab"
-              aria-controls="messages"
-            >
-              DPU
-            </a>
-            <a
-              class="list-group-item list-group-item-action"
-              id="list-settings-list"
-              data-toggle="list"
-              href="#list-settings"
-              role="tab"
-              aria-controls="settings"
-            >
-              Indek
-            </a>
+            {Object.entries(programs).map(([code, program]) => (
+              <a
+                class="list-group-item list-group-item-action"
+                program={code}
+                id="list-home-list"
+                data-toggle="list"
+                href="#list-home"
+                role="tab"
+                aria-controls="home"
+                onClick={(e) =>
+                  setProgram(e.target.attributes.program.nodeValue)
+                }
+              >
+                {program}
+              </a>
+            ))}
           </div>
         </div>
       </div>
@@ -100,64 +89,101 @@ function ProgramFilter() {
 }
 
 function AreaFilter() {
+  //const areas = useRecoilValue(allAreasAtom);
+
+  var areas = [
+    "artificiell intelligens",
+    "elektronik",
+    "autonoma system",
+    "area xxxx",
+    "area xyxy",
+    "area hejhej",
+  ];
+
+  function onCheckboxClick(area) {
+    console.log(area);
+  }
+
+  // TODO: fix return statement to map over all areas
+  // and create a list over checkboxes together with name of all areas
   return (
     <div className="filterBox">
-      <h3>Inriktning</h3>
-      <div
-        className="btn-group-vertical"
-      >
-        <button
-          className="areaFilterButton"
-          type="button"
-          class="btn btn-secondary"
-        >
-          Area 1
-        </button>
-        <button
-          className="areaFilterButton"
-          type="button"
-          class="btn btn-secondary"
-        >
-          Area 2
-        </button>
-        <button
-          className="areaFilterButton"
-          type="button"
-          class="btn btn-secondary"
-        >
-          Area 2
-        </button>
-        <button
-          className="areaFilterButton"
-          type="button"
-          class="btn btn-secondary"
-        >
-          Area 2
-        </button>
-        <button
-          className="areaFilterButton"
-          type="button"
-          class="btn btn-secondary"
-        >
-          Area 2
-        </button>
-<button
-          className="areaFilterButton"
-          type="button"
-          class="btn btn-secondary"
-        >
-          Area 2
-        </button>
-
+      <h3>Profil</h3>
+      <div className="overflow-auto">
+        <div class="col-4">
+          <div
+            class="list-group"
+            id="list-tab"
+            role="tablist"
+            style={{ backgroundColor: "white" }}
+          >
+            {areas.map((area) => (
+              <div class="form-check" style={{ margin: "5px" }}>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                  defaultChecked
+                  onClick={() => onCheckboxClick(area)}
+                />
+                <label class="form-check-label" for="flexCheckDefault">
+                  {area}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 function PrecisionFilter() {
+  var examinations = [
+    "Alla examinationsmoment",
+    "TEN",
+    "LAB",
+    "UPG",
+    "KTR",
+    "HEM",
+    "BAS",
+    "PRA",
+  ];
+
+  function onCheckboxClick(examination) {
+    console.log(examination);
+  }
+
   return (
     <div className="filterBox">
-      <h3>PrecisionFilter</h3>
+      <h3>Examinationsmoment</h3>
+      <div className="overflow-auto">
+        <div class="col-4">
+          <div
+            class="list-group"
+            id="list-tab"
+            role="tablist"
+            style={{ backgroundColor: "white" }}
+          >
+            {examinations.map((examination) => (
+              <div class="form-check" style={{ margin: "5px" }}>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value={examination}
+                  id="flexCheckDefault"
+                  onClick={() => onCheckboxClick(examination)}
+                  defaultChecked
+                />
+                <label class="form-check-label" for="flexCheckChecked">
+                  {examination}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
