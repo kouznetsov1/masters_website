@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from course import Course
 from database import add_to_db
+import time
 
 
 def start_scraping(program, url):
@@ -34,14 +35,23 @@ def scrape_area(driver, course):
     counter = 1
     try:
         while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")):
-            area = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")
+            try:
+                area = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]/label/span").text
+                area = area.replace("Inriktning: ", "")
+            except:
+                area = ""
             #course.set_area(area.get_attribute("data-specialization"))
+            course.area = area
             course.area_number = counter
             print("Working through area number: ", course.area_number, "Area:", course.area)
             scrape_period(driver, course)
             counter += 1
     except:
         print("Done working through areas.")
+
+def parse_area_name(area):
+    area.replace("Inriktning: ", "")
+    return area
 
 def scrape_period(driver, course):
     period_counter = 1
@@ -65,6 +75,7 @@ def scrape_courses(driver, course):
             # xpath really long, save it and use as a variable instead
             xpath = "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter) + "]"
 
+
             # set values to curr course
             course.code = driver.find_element(By.XPATH, xpath + "/td[1]").text
             course.name = driver.find_element(By.XPATH, xpath + "/td[2]/a").text
@@ -87,8 +98,8 @@ def scrape_courses(driver, course):
             # done with course, add course to db and add 2 to counter to go to next course
             print("Period:", course.period)
             print("Course name:", course.name)
-            #add_to_db(course)
-            counter += 2
+            add_to_db(course)
+            counter += 2 # add with 2 is not a typo
     except:
         print("Done working through courses.")
 
@@ -117,7 +128,7 @@ def check_examination(driver, course):
 
 def main():
     urls = {
-        "D": "https://liu.se/studieinfo/program/6cddd/3695",
+        "D": "https://liu.se/studieinfo/program/6cddd/4181",
         "DPU": "https://liu.se/studieinfo/program/6cdpu/3704",
         "ED": "https://liu.se/studieinfo/program/6cien/3706",
         "EMM": "https://liu.se/studieinfo/program/6cemm/3708",
@@ -134,8 +145,11 @@ def main():
     }
 
     for program in urls:
-        print(program, '-', urls[program])
-        start_scraping(program, urls[program])
+        #print(program, '-', urls[program])
+        #start_scraping(program, urls[program])
+        if program == "D":
+            print("scraping: ", program)
+            start_scraping(program, urls[program])
 
 #start_scraping(url)
 main()
