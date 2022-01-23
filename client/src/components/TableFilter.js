@@ -6,8 +6,11 @@ import {
   nonHandledCourses as coursesToHandleAtom,
   courses as handledCoursesAtom,
   areas as allAreasAtom,
+  areaFilter as areaFilterAtom,
+  examinationFilter as examinationFilterAtom,
 } from "../atoms";
 import { setCourses } from "./functions/CourseSetter";
+import cloneDeep from "lodash/cloneDeep";
 
 class TableFilter extends React.Component {
   render() {
@@ -89,19 +92,25 @@ function ProgramFilter() {
 }
 
 function AreaFilter() {
-  //const areas = useRecoilValue(allAreasAtom);
+  const areas = cloneDeep(useRecoilValue(allAreasAtom));
+  const [areaFilter, setAreaFilter] = useRecoilState(areaFilterAtom);
 
-  var areas = [
-    "artificiell intelligens",
-    "elektronik",
-    "autonoma system",
-    "area xxxx",
-    "area xyxy",
-    "area hejhej",
-  ];
+  for (var i = 0; i < areas.length; i++){
+    if (areas[i] === ""){
+      areas.splice(i, 1);
+    }
+  }
 
-  function onCheckboxClick(area) {
-    console.log(area);
+  function onCheckboxClick(area, value) {
+    if (value){
+      console.log("deleting from areas");
+      setAreaFilter((areaFilter) => setAreaFilter((areas) => areas.find((item) => item.name === area) ? areas : [...areas, area])); 
+    }
+    else {
+      console.log("adding to areas");
+      setAreaFilter((areaFilter) => areaFilter.filter((item) => item.name !== area));
+    }
+    console.log(areaFilter);
   }
 
   // TODO: fix return statement to map over all areas
@@ -117,21 +126,31 @@ function AreaFilter() {
             role="tablist"
             style={{ backgroundColor: "white" }}
           >
-            {areas.map((area) => (
+            {areas.map((area) => { 
+              var checked = true;
+              return(
               <div class="form-check" style={{ margin: "5px" }}>
                 <input
                   class="form-check-input"
                   type="checkbox"
-                  value=""
                   id="flexCheckDefault"
                   defaultChecked
-                  onClick={() => onCheckboxClick(area)}
+                  onClick={() => {
+                    if (checked){
+                      onCheckboxClick(area, checked);
+                      checked = false;
+                    }
+                    else{
+                      onCheckboxClick(area, checked);
+                      checked = true;
+                    }
+                  }}
                 />
                 <label class="form-check-label" for="flexCheckDefault">
                   {area}
                 </label>
               </div>
-            ))}
+            )})}
           </div>
         </div>
       </div>
@@ -141,7 +160,6 @@ function AreaFilter() {
 
 function PrecisionFilter() {
   var examinations = [
-    "Alla examinationsmoment",
     "TEN",
     "LAB",
     "UPG",
