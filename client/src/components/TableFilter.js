@@ -102,19 +102,19 @@ function AreaFilter() {
   }
 
   function onCheckboxClick(area, value) {
+    // delete from areafilter
     if (value){
-      console.log("deleting from areas");
-      setAreaFilter((areaFilter) => setAreaFilter((areas) => areas.find((item) => item.name === area) ? areas : [...areas, area])); 
+      setAreaFilter((areaFilter) => areaFilter.filter((item) => item !== area));
     }
+    // add to areafilter
     else {
-      console.log("adding to areas");
-      setAreaFilter((areaFilter) => areaFilter.filter((item) => item.name !== area));
+      setAreaFilter((areaFilter) => 
+        (areaFilter.find((item) =>
+        item === area) ?
+          area : [...areaFilter, area])); 
     }
-    console.log(areaFilter);
   }
 
-  // TODO: fix return statement to map over all areas
-  // and create a list over checkboxes together with name of all areas
   return (
     <div className="filterBox">
       <h3>Profil</h3>
@@ -127,7 +127,6 @@ function AreaFilter() {
             style={{ backgroundColor: "white" }}
           >
             {areas.map((area) => { 
-              var checked = true;
               return(
               <div class="form-check" style={{ margin: "5px" }}>
                 <input
@@ -135,14 +134,12 @@ function AreaFilter() {
                   type="checkbox"
                   id="flexCheckDefault"
                   defaultChecked
-                  onClick={() => {
-                    if (checked){
-                      onCheckboxClick(area, checked);
-                      checked = false;
+                  onClick={(e) => {
+                    if (e.target.checked){
+                      onCheckboxClick(area, e.target.checked);
                     }
                     else{
-                      onCheckboxClick(area, checked);
-                      checked = true;
+                      onCheckboxClick(area, e.target.checked);
                     }
                   }}
                 />
