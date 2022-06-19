@@ -29,3 +29,10 @@ export const chosenCourses = atom({
   key: "chosenCourses",
   default: [],
 });
+
+export const chosenProgram = atom(
+  {
+    key: "chosenProgram",
+    default: ["D"],
+  }
+);

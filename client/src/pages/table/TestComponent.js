@@ -21,7 +21,6 @@ class TestComponent extends React.Component {
 function TestFunc() {
     const courses = useRecoilValue(coursesToHandleAtom);
 
-    console.log({courses});
     return (
         <p>tjena</p>
     );

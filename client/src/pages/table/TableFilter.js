@@ -8,6 +8,7 @@ import {
   areas as allAreasAtom,
   areaFilter as areaFilterAtom,
   examinationFilter as examinationFilterAtom,
+  chosenProgram as chosenProgramAtom
 } from "../../atoms";
 import { setCourses } from "../functions/CourseSetter";
 import cloneDeep from "lodash/cloneDeep";
@@ -25,9 +26,9 @@ class TableFilter extends React.Component {
 }
 
 // #TODO:
-// rewrite api to show other programs courses
+// extend api and database to show other programs courses
 function ProgramFilter() {
-  const [currentProgram, setProgram] = useState();
+  const [currentProgram, setProgramAtom] = useRecoilState(chosenProgramAtom);
   const [coursesToHandle, setNonHandledCourses] = useRecoilState(
     coursesToHandleAtom
   );
@@ -43,6 +44,11 @@ function ProgramFilter() {
     setHandledCourses(courses);
     setAllAreas(areas);
   }, [currentProgram]);
+
+  const setProgram = (program) => {
+    setProgramAtom(program);
+    console.log(currentProgram);
+  }
 
   var programs = {
     D: "Datateknik",
@@ -60,6 +66,7 @@ function ProgramFilter() {
     TBI: "Teknisk Biologi",
     Y: "Teknisk fysik och elektroteknik",
   };
+
 
   return (
     <div className="filterBox">
@@ -92,7 +99,7 @@ function ProgramFilter() {
 
 function AreaFilter() {
   const areas = cloneDeep(useRecoilValue(allAreasAtom));
-  const [areaFilter, setAreaFilter] = useRecoilState(areaFilterAtom);
+  const setAreaFilter = useSetRecoilState(areaFilterAtom);
 
   for (var i = 0; i < areas.length; i++){
     if (areas[i] === ""){
@@ -134,12 +141,7 @@ function AreaFilter() {
                   id="flexCheckDefault"
                   defaultChecked
                   onClick={(e) => {
-                    if (e.target.checked){
                       onCheckboxClick(area, e.target.checked);
-                    }
-                    else{
-                      onCheckboxClick(area, e.target.checked);
-                    }
                   }}
                 />
                 <label class="form-check-label" for="flexCheckDefault">
@@ -155,6 +157,8 @@ function AreaFilter() {
 }
 
 function PrecisionFilter() {
+  const setExaminationFilter = useSetRecoilState(examinationFilterAtom);
+
   var examinations = [
     "TEN",
     "LAB",
@@ -165,8 +169,18 @@ function PrecisionFilter() {
     "PRA",
   ];
 
-  function onCheckboxClick(examination) {
-    console.log(examination);
+  function onCheckboxClick(examination, value) {
+    // delete from examinationfilter
+    if (value){
+      setExaminationFilter((examinationFilter) => examinationFilter.filter((item) => item !== examination));
+    }
+    // add to examinationfilter
+    else {
+      setExaminationFilter((examinationFilter) =>
+        (examinationFilter.find((item) =>
+        item === examination) ?
+          examination : [...examinationFilter, examination]));
+    }
   }
 
   return (
@@ -185,9 +199,10 @@ function PrecisionFilter() {
                 <input
                   class="form-check-input"
                   type="checkbox"
-                  value={examination}
                   id="flexCheckDefault"
-                  onClick={() => onCheckboxClick(examination)}
+                  onClick={(e) => {
+                      onCheckboxClick(examination, e.target.checked);
+                  }}
                   defaultChecked
                 />
                 <label class="form-check-label" for="flexCheckChecked">

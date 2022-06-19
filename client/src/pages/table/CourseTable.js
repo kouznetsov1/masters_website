@@ -55,7 +55,6 @@ const Areas = (semester, courses, areas, filteredAreas) => {
 
   for (let i = 0; i < areas.length; i++) {
     const area = areas[i];
-    console.log(filteredAreas);
     if (area !== ""){
       renderedAreas.push(
         <div className={"semester"}>

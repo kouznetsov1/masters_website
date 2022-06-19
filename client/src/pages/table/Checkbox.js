@@ -38,7 +38,6 @@ const Checkbox = (props) => {
   }
 
   useEffect(() => {
-
     if (courseState.checked) {
       var checked = false;
       for (var i = 0; i < courseState.dynamic_values.length; i++){
