@@ -14,8 +14,8 @@ def start_scraping(program, url):
     driver.get(url)
 
     # waits for site to load, then clicks on "programplan"
-    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/a")))
-    driver.find_element(By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/a").click()
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/button")))
+    driver.find_element(By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[3]/button").click()
 
     scrape_semester(program, driver)
 
@@ -34,9 +34,11 @@ def scrape_semester(program, driver):
 def scrape_area(driver, course):
     counter = 1
     try:
-        while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]")):
+        # xpath = area list item
+        while(driver.find_element(By.XPATH, "//*[@id='curriculum']/div/section[" + str(course.semester) + "]/div/div[" + str(counter) + "]")):
             try:
-                area = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(counter) + "]/label/span").text
+                # xpath = area list item text
+                area = driver.find_element(By.XPATH, "//*[@id='curriculum']/div/article[" + str(course.semester) + "]/div/div[" + str(counter) + "]/div/table/caption/span").text
                 area = area.replace("Inriktning: ", "")
             except:
                 area = ""
@@ -56,7 +58,8 @@ def parse_area_name(area):
 def scrape_period(driver, course):
     period_counter = 1
     try:
-        while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(period_counter) + "]")):
+        # xpath = period item
+        while(driver.find_element(By.XPATH, "//*[@id='curriculum']/div/section[" + str(course.semester) + "]/div/div[" + str(course.area_number) + "]/div/table/tbody[" + str(period_counter) + "]")):
             print("Working through period:", period_counter)
             course.period = period_counter
             scrape_courses(driver, course)
@@ -67,13 +70,13 @@ def scrape_period(driver, course):
 def scrape_courses(driver, course):
     counter = 2
     try:
-        while(driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter) + "]")):
+        while(driver.find_element(By.XPATH, "//*[@id='curriculum']/div/section[" + str(course.semester) + "]/div/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter) + "]")):
 
-            # using the same course object but if we dont reset some variabes such as examination it lingers for next course
+            # using the same course object but if we dont reset some variables such as examination it lingers for next course
             course.reset()
 
             # xpath really long, save it and use as a variable instead
-            xpath = "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter) + "]"
+            xpath = "//*[@id='curriculum']/div/section[" + str(course.semester) + "]/div/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter) + "]"
 
 
             # set values to curr course
@@ -91,14 +94,14 @@ def scrape_courses(driver, course):
             try:
                 # checks if there is additional information
                 if (driver.find_element(By.XPATH, xpath + "/td[7]/div/button/span")):
-                    course.other_information = driver.find_element(By.XPATH, "//*[@id='62D9382599C54E64BAA62C4084A7B47F']/div/article[" + str(course.semester) + "]/main/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter+1) + "]/td/div").get_attribute("innerText")
+                    course.other_information = driver.find_element(By.XPATH, "//*[@id='curriculum']/div/section[" + str(course.semester) + "]/div/div[" + str(course.area_number) + "]/div/table/tbody[" + str(course.period) + "]/tr[" + str(counter+1) + "]/td/div").get_attribute("innerText")
             except:
                 course.other_information = ''
 
             # done with course, add course to db and add 2 to counter to go to next course
             print("Period:", course.period)
             print("Course name:", course.name)
-            add_to_db(course)
+            #add_to_db(course)
             counter += 2 # add with 2 is not a typo
     except:
         print("Done working through courses.")
@@ -112,14 +115,14 @@ def check_examination(driver, course):
     driver.get(course.url)
 
     # wait for elements
-    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[4]/a")))
-    driver.find_element(By.XPATH, "/html/body/main/div[1]/div[2]/div[1]/ul/li[4]/a").click()
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "/html/body/main/div/div[2]/div[1]/ul/li[3]/button")))
+    driver.find_element(By.XPATH, "/html/body/main/div/div[2]/div[1]/ul/li[3]/button").click()
 
-    counter = 1
+    counter = 2
     try:
         # checks course examination on page
-        while (driver.find_element(By.XPATH, "//*[@id='8A04CCF13A98464493EF36E97435E240']/div/table/tbody/tr[" + str(counter) + "]/td[1]")):
-            examination_type = driver.find_element(By.XPATH, "//*[@id='8A04CCF13A98464493EF36E97435E240']/div/table/tbody/tr[" + str(counter) + "]/td[1]").text
+        while (driver.find_element(By.XPATH, "//*[@id='examination']/div/table/tbody/tr[" + str(counter) + "]/td[1]")):
+            examination_type = driver.find_element(By.XPATH, "//*[@id='examination']/div/table/tbody/tr[" + str(counter) + "]/td[1]").text
             course.check_examination_type(examination_type)
             counter += 1
     except:

@@ -50,6 +50,7 @@ class Course():
             self.vof = "V"
         else:
             self.vof = "-"
+
     """
     def set_area(self, area):
         if "" == area:
