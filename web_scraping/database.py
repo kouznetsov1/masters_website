@@ -32,7 +32,7 @@ def add_to_db(course):
     course.lab, course.exam, course.project, course.upg, course.ktr, course.hem, course.bas, course.more_periods)
 
     postgres_insert_query = """INSERT INTO courses(name, code, semester, period, area, points, level, block, \
-        url, other_information, vof, lab, exam, project, upg, ktr, hem, bas, more_periods) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        url, other_information, vof, lab, ten, pra, upg, ktr, hem, bas, more_periods) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
     cursor.execute(postgres_insert_query % record_to_insert)
 

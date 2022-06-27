@@ -2,17 +2,21 @@ import React, { useEffect, useState } from "react";
 import "./CourseTable.css";
 import Checkbox from "./Checkbox.js";
 import { useRecoilValue } from 'recoil';
-import {courses as coursesAtom, areas as allAreasAtom, areaFilter as areaFilterAtom} from "../../atoms";
+import {courses as coursesAtom,
+  areas as allAreasAtom,
+  areaFilter as areaFilterAtom,
+  examinationFilter as examinationFilterAtom} from "../../atoms";
 
 const CourseTable = () => {
   const courses = useRecoilValue(coursesAtom);
   const areas = useRecoilValue(allAreasAtom);
   const filteredAreas = useRecoilValue(areaFilterAtom); 
+  const examinationFilter = useRecoilValue(examinationFilterAtom);
 
-  return Semester(courses, areas, filteredAreas);
+  return Semester(courses, areas, filteredAreas, examinationFilter);
 }
 
-const Semester = (courses, areas, filteredAreas) => {
+const Semester = (courses, areas, filteredAreas, examinationFilter) => {
   var semester = 7;
   var renderedSemesters = [];
 
@@ -40,7 +44,8 @@ const Semester = (courses, areas, filteredAreas) => {
             aria-labelledby={"semester_" + semester}
             data-parent="#accordion"
           >
-            <div className="card-body">{Areas(semester, courses, areas, filteredAreas)}</div>
+            <div className="card-body">{Areas(semester, 
+              courses, areas, filteredAreas, examinationFilter)}</div>
           </div>
         </div>
       </div>
@@ -50,23 +55,23 @@ const Semester = (courses, areas, filteredAreas) => {
   return <div>{renderedSemesters}</div>;
 }
 
-const Areas = (semester, courses, areas, filteredAreas) => {
+const Areas = (semester, courses, areas, filteredAreas, examinationFilter) => {
   var renderedAreas = [];
 
   for (let i = 0; i < areas.length; i++) {
     const area = areas[i];
-    if (area !== ""){
+    if (area !== "" && !filteredAreas.includes(area)) {
       renderedAreas.push(
         <div className={"semester"}>
           <h3 className="area-header">{area}</h3>
-          {Period(semester, area, courses)}
+          {Period(semester, area, courses, filteredAreas, examinationFilter)}
         </div>
       );
     }
-    else if (!filteredAreas.includes(area)){
+    else if (area === ""){
       renderedAreas.push(
         <div className={"semester"}>
-          {Period(semester, area, courses)}
+          {Period(semester, area, courses, filteredAreas, examinationFilter)}
         </div>
       )
     }
@@ -74,7 +79,7 @@ const Areas = (semester, courses, areas, filteredAreas) => {
   return <div>{renderedAreas}</div>;
 }
 
-const Period = (semester, area, courses) => {
+const Period = (semester, area, courses, filteredAreas, examinationFilter) => {
   var period = 1;
   var renderedPeriods = [];
 
@@ -83,7 +88,7 @@ const Period = (semester, area, courses) => {
       <div className="periods">
         <div className={"period_" + period}>
           <h5>Period {period}</h5>
-          {Course(semester, area, period, courses)}
+          {Course(semester, area, period, courses, filteredAreas, examinationFilter)}
         </div>
       </div>
     );
@@ -93,7 +98,7 @@ const Period = (semester, area, courses) => {
 }
 
 
-const Course = (semester, area, period, courses) => {
+const Course = (semester, area, period, courses, filteredAreas, examinationFilter) => {
   var renderedCourses = [];
   var coursesToRender = [];
 
@@ -102,7 +107,9 @@ const Course = (semester, area, period, courses) => {
     const to_render = shallCourseRender(
       semester,
       period,
-      course.dynamic_values
+      course,
+      filteredAreas,
+      examinationFilter
     );
 
     if (to_render && course.area.includes(area)) {
@@ -153,9 +160,9 @@ const Course = (semester, area, period, courses) => {
             <td style={{ width: "4em" }}>{course.level}</td>
             <td style={{ width: "5em" }}>{course.block}</td>
             <td style={{ width: "4em" }}>{course.vof}</td>
-            <td>{ExaminationObject(course.exam)}</td>
+            <td>{ExaminationObject(course.ten)}</td>
             <td>{ExaminationObject(course.lab)}</td>
-            <td>{ExaminationObject(course.project)}</td>
+            <td>{ExaminationObject(course.pra)}</td>
             <td>{ExaminationObject(course.upg)}</td>
             <td>{ExaminationObject(course.ktr)}</td>
             <td>{ExaminationObject(course.hem)}</td>
@@ -175,11 +182,27 @@ const ExaminationObject = (examination) => {
   return;
 }
 
-const shallCourseRender = ((semester, period, dyn_values) => {
+const shallCourseRender = ((semester, period, course, filteredAreas, examinationFilter) => {
+  var dyn_values = course.dynamic_values
+  
+  //console.log(course)
+
+  // checks if course uses filtered examination type
+  const is_examination = () => {
+    for (let i = 0; i < examinationFilter.length; i++) {
+      var exam_type = examinationFilter[i].toLowerCase();
+      if (course[exam_type] === true) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   for (let i = 0; i < dyn_values.length; i++) {
     if (
       dyn_values[i].semester === semester &&
-      dyn_values[i].period === period
+      dyn_values[i].period === period &&
+      !is_examination() && !filteredAreas.includes(course.area)
     ) {
       return true;
     }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import "./TableFilter.css";
 import {
@@ -38,9 +38,12 @@ function ProgramFilter() {
   const [courses, areas] = setCourses(coursesToHandle);
 
   useEffect(() => {
+    // setNonHandledCourses are for courses with duplicates, 
+    // courses in different areas, periods etc.
     axios.get("http://localhost:5000/courses").then((res) => {
       setNonHandledCourses(res.data);
     });
+    // Handled courses are without duplicates
     setHandledCourses(courses);
     setAllAreas(areas);
   }, [currentProgram]);

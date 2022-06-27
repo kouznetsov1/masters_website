@@ -9,7 +9,7 @@ export function setCourses(nonHandledCourses) {
   };
 
   var course_id = 0;
-
+  
   for (let i = 0; i < courses_mount.length; i++) {
     var course = courses_mount[i];
 

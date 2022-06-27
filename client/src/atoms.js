@@ -33,6 +33,6 @@ export const chosenCourses = atom({
 export const chosenProgram = atom(
   {
     key: "chosenProgram",
-    default: ["D"],
+    default: [],
   }
 );
