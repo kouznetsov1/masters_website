@@ -27,11 +27,12 @@ const Semester = (courses, areas, filteredAreas, examinationFilter) => {
           <div className="card-header" id={"semester_" + semester}>
             <h2 className="mb-0">
               <button
-                className="btn btn-link"
+                className="btn btn-link btn-block text-left"
                 data-toggle="collapse"
                 data-target={"#collapse" + semester}
                 aria-expanded="true"
                 aria-controls={"collapseOne" + semester}
+                type="button"
               >
                 Termin {semester}
               </button>

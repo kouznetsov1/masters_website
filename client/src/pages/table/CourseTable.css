@@ -1,7 +1,8 @@
 .full-table {
-	width: 80%;
+	width: 80;
 	margin: auto;
 	margin-top: 3em;
+	position: absolute;
 }
 
 .area-header {
@@ -12,4 +13,12 @@
 	margin-left: 0.8em;
 	margin-top: 1em;
 	margin-right: 0.8em;
+}
+
+.accordion {
+	overflow-anchor: none;
+}
+
+div {
+	display: block;
 }
