@@ -10,7 +10,9 @@
 
 .stickyPane {
   position: sticky;
-  z-index: 1;
+  background-color: green;
+  height: 98vh;
+  top: 0;
 }
 
 .filterBoxes {

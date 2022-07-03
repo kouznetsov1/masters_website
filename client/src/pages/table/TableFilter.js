@@ -18,9 +18,9 @@ class TableFilter extends React.Component {
     return (
       <div className="stickyPane">
         <div className="filterBoxes">
-          <ProgramFilter />
-          <AreaFilter />
-          <PrecisionFilter />
+        <ProgramFilter/>
+        <AreaFilter/>
+        <PrecisionFilter/>
         </div>
       </div>
     );
