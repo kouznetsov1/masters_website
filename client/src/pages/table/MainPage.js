@@ -1,7 +1,7 @@
 import React from "react";
 import CourseTable from "./CourseTable";
 import TableFilter from "./TableFilter";
-import "./MainPage.css";
+import "./css/MainPage.css";
 
 function MainPage() {
     return (

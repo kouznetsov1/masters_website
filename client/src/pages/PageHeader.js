@@ -1,4 +1,5 @@
 import React from "react";
+import "./PageHeader.css";
 
 class Header extends React.Component {
   constructor(props) {
@@ -11,17 +12,19 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
-      <nav className="navbar sticky-top navbar-light bg-light">
-        <a className="navbar-brand" href="/" style={{borderStyle: "solid", padding: "0.2em", borderWidth: "0.1em", margin: "0.1em"}}>
-          MASTERS-LIU
-        </a>
+        <nav className="navbar navbar-dark bg-dark">
+          <a
+            className="navbar-brand"
+            href="/"
+          >
+            <p className="navLink">MASTERS - LIU</p>
+          </a>
 
-        <a className="nav-item nav-link" href="/chosen">
-          Valda kurser
-        </a>
-
+          <a className="nav-item nav-link" href="/chosen">
+            <p className="navLink">Valda kurser</p>
+          </a>
         </nav>
-        </div>
+      </div>
     );
   }
 }

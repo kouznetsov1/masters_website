@@ -1,0 +1,20 @@
+.header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9;
+}
+
+.navLink {
+    color: #fff;
+    padding: 0.4em;
+    margin: 0.2em;
+    border-style: solid;
+    border-width: 0.1em;
+    border-radius: 0.2em;
+}
+
+.navLink:hover {
+    background-color: rgb(221, 221, 221);
+    color: black;
+}

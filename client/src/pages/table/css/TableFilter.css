@@ -8,6 +8,11 @@
   display: inline-block;
 }
 
+.stickyPane {
+  position: sticky;
+  z-index: 1;
+}
+
 .filterBoxes {
   width: 80%;
   margin: auto;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./CourseTable.css";
+import "./css/CourseTable.css";
 import Checkbox from "./Checkbox.js";
 import { useRecoilValue } from 'recoil';
 import {courses as coursesAtom,
