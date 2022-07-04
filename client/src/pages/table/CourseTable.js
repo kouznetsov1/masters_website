@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
 import "./css/CourseTable.css";
 import Checkbox from "./Checkbox.js";
-import { useRecoilValue } from 'recoil';
-import {courses as coursesAtom,
+import { useRecoilValue } from "recoil";
+import {
+  courses as coursesAtom,
   areas as allAreasAtom,
   areaFilter as areaFilterAtom,
-  examinationFilter as examinationFilterAtom} from "../../atoms";
+  examinationFilter as examinationFilterAtom,
+} from "../../atoms";
 
 const CourseTable = () => {
   const courses = useRecoilValue(coursesAtom);
   const areas = useRecoilValue(allAreasAtom);
-  const filteredAreas = useRecoilValue(areaFilterAtom); 
+  const filteredAreas = useRecoilValue(areaFilterAtom);
   const examinationFilter = useRecoilValue(examinationFilterAtom);
 
-  return Semester(courses, areas, filteredAreas, examinationFilter);
-}
+  return (
+    <div className="bigFullAssTable">
+      {Semester(courses, areas, filteredAreas, examinationFilter)}
+    </div>
+  );
+};
 
 const Semester = (courses, areas, filteredAreas, examinationFilter) => {
   var semester = 7;
@@ -45,8 +51,15 @@ const Semester = (courses, areas, filteredAreas, examinationFilter) => {
             aria-labelledby={"semester_" + semester}
             data-parent="#accordion"
           >
-            <div className="card-body">{Areas(semester, 
-              courses, areas, filteredAreas, examinationFilter)}</div>
+            <div className="card-body">
+              {Areas(
+                semester,
+                courses,
+                areas,
+                filteredAreas,
+                examinationFilter
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -54,7 +67,7 @@ const Semester = (courses, areas, filteredAreas, examinationFilter) => {
     semester++;
   } while (semester <= 9);
   return <div>{renderedSemesters}</div>;
-}
+};
 
 const Areas = (semester, courses, areas, filteredAreas, examinationFilter) => {
   var renderedAreas = [];
@@ -68,17 +81,16 @@ const Areas = (semester, courses, areas, filteredAreas, examinationFilter) => {
           {Period(semester, area, courses, filteredAreas, examinationFilter)}
         </div>
       );
-    }
-    else if (area === ""){
+    } else if (area === "") {
       renderedAreas.push(
         <div className={"semester"}>
           {Period(semester, area, courses, filteredAreas, examinationFilter)}
         </div>
-      )
+      );
     }
   }
   return <div>{renderedAreas}</div>;
-}
+};
 
 const Period = (semester, area, courses, filteredAreas, examinationFilter) => {
   var period = 1;
@@ -89,17 +101,30 @@ const Period = (semester, area, courses, filteredAreas, examinationFilter) => {
       <div className="periods">
         <div className={"period_" + period}>
           <h5>Period {period}</h5>
-          {Course(semester, area, period, courses, filteredAreas, examinationFilter)}
+          {Course(
+            semester,
+            area,
+            period,
+            courses,
+            filteredAreas,
+            examinationFilter
+          )}
         </div>
       </div>
     );
     period++;
   } while (period <= 2);
   return <div>{renderedPeriods}</div>;
-}
+};
 
-
-const Course = (semester, area, period, courses, filteredAreas, examinationFilter) => {
+const Course = (
+  semester,
+  area,
+  period,
+  courses,
+  filteredAreas,
+  examinationFilter
+) => {
   var renderedCourses = [];
   var coursesToRender = [];
 
@@ -141,20 +166,15 @@ const Course = (semester, area, period, courses, filteredAreas, examinationFilte
       <tbody>
         {coursesToRender.map((course) => (
           <tr>
-            <Checkbox course={course}
-              semester={semester}
-              period={period}
-            />
-            <td style={{width: "5em"}}>
+            <Checkbox course={course} semester={semester} period={period} />
+            <td style={{ width: "5em" }}>
               <a
-                href={
-                  "http://www.google.com/search?q=" + course.code + "+liu"
-                }
+                href={"http://www.google.com/search?q=" + course.code + "+liu"}
               >
                 {course.code}
               </a>
             </td>
-            <td style={{width: "40em"}}>
+            <td style={{ width: "40em" }}>
               <a href={course.url}>{course.name}</a>
             </td>
             <td style={{ width: "4em" }}>{course.points}</td>
@@ -174,18 +194,24 @@ const Course = (semester, area, period, courses, filteredAreas, examinationFilte
     </table>
   );
   return <div>{renderedCourses}</div>;
-}
+};
 
 const ExaminationObject = (examination) => {
-  if (examination === true){
+  if (examination === true) {
     return "X";
   }
   return;
-}
+};
 
-const shallCourseRender = ((semester, period, course, filteredAreas, examinationFilter) => {
-  var dyn_values = course.dynamic_values
-  
+const shallCourseRender = (
+  semester,
+  period,
+  course,
+  filteredAreas,
+  examinationFilter
+) => {
+  var dyn_values = course.dynamic_values;
+
   //console.log(course)
 
   // checks if course uses filtered examination type
@@ -197,19 +223,19 @@ const shallCourseRender = ((semester, period, course, filteredAreas, examination
       }
     }
     return false;
-  }
+  };
 
   for (let i = 0; i < dyn_values.length; i++) {
     if (
       dyn_values[i].semester === semester &&
       dyn_values[i].period === period &&
-      !is_examination() && !filteredAreas.includes(course.area)
+      !is_examination() &&
+      !filteredAreas.includes(course.area)
     ) {
       return true;
     }
   }
   return false;
-});
-
+};
 
 export default CourseTable;

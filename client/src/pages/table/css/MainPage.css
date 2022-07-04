@@ -2,9 +2,14 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
+    grid-column-gap: 2em;
     grid-row-gap: 0px;
 }
     
-.filterBox { grid-area: 1 / 1 / 6 / 2; }
-.tableBox { grid-area: 1 / 2 / 6 / 6; }
+.filterBox {
+    grid-area: 1 / 1 / 6 / 3;
+}
+
+.tableBox {
+    grid-area: 1 / 3 / 6 / 6;
+}
