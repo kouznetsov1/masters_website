@@ -12,7 +12,7 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
-        <nav className="navbar navbar-dark bg-dark">
+        <nav className="navbar navbar-dark navbar-custom">
           <a
             className="navbar-brand"
             href="/"

@@ -1,27 +1,24 @@
 .filterBox {
   width: 28em;
   height: 16em;
-  background-color: #bebebe;
-  border-style: solid;
-  border-width: 0.1em;
+  background-color: rgb(70, 70, 70);
   margin: 0.5em;
   display: inline-block;
+  color: white;
 }
 
 .stickyPane {
   top: 5em;
   position: sticky;
-  background-color: white;
-  height: 100vh;
+  background-color: rgb(70, 70, 70);
+  height: 58.2em;
   width: 30em;
-  border: 2em;
   overflow-y: auto;
 }
 
 .filterBoxes {
   width: 80%;
   margin: auto;
-  padding-top: 1em;
   justify-content: center;
   display: flex;
   flex-wrap: wrap;
@@ -42,19 +39,20 @@
 }
 
 .list-group {
-  border-style: solid;
-  border-width: 0.1em;
   width: 26em;
   height: 11em;
   overflow: auto;
 }
 
 h3 {
-  margin: 0.3em;
+  margin-left: 0.5em;
 }
 
 .scrollable-menu {
   height: auto;
-  max-height: 200px;
   overflow-x: hidden;
+}
+
+.form-check {
+  color: black;
 }
