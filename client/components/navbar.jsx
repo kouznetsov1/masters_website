@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <div className="border-b flex justify-between lg:justify-around items-center py-2">
+    <div className="border-b border-neutral-800 flex justify-between lg:justify-around items-center py-2">
 
       <Logo />
       <div className="hidden space-x-8 lg:flex mx-8">
